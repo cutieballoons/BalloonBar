@@ -24,27 +24,10 @@ export async function POST(req) {
             quantity: 1,
           },
         ],
-        allow_discounts: true, // ✅ Enables discount codes in checkout!
+        allow_discounts: true, // ✅ Enables discounts
+        use_customer_default_address: true, // ✅ Helps Shopify treat it like a normal order
+        send_invoice: true, // ✅ Generates an invoice email with discount options
       },
     };
 
-    // Send request to Shopify API
-    const response = await fetch(`${SHOPIFY_STORE_URL}/admin/api/2024-01/draft_orders.json`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Access-Token": SHOPIFY_ACCESS_TOKEN,
-      },
-      body: JSON.stringify(draftOrderPayload),
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.errors ? JSON.stringify(data.errors) : "Failed to create draft order");
-    }
-
-    return NextResponse.json({ checkoutUrl: data.draft_order.invoice_url });
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-}
+    //
