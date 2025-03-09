@@ -8,24 +8,23 @@ export async function POST(req) {
     const SHOPIFY_STORE_URL = "https://cutie-balloons.myshopify.com";
     const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 
-    // Create the draft order note
+    // Create a readable summary of selected balloons
     const cartDetails = cart
-      .map((item) => `- ${item.quantity}x ${item.name}`)
-      .join("\n");
+      .map((item) => `${item.quantity}x ${item.name}`)
+      .join(", ");
+
+    const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
 
     const draftOrderPayload = {
       draft_order: {
         line_items: [
           {
-            title: "Custom Balloon Bouquet",
-            price: cart.reduce((acc, item) => acc + item.price * item.quantity, 0),
+            title: `Balloon Bouquet: ${cartDetails}`,
+            price: totalCost,
             quantity: 1,
           },
         ],
-        note: `Customer selected:\n${cartDetails}\n\nTotal: $${cart.reduce(
-          (acc, item) => acc + item.price * item.quantity,
-          0
-        ).toFixed(2)}`,
+        allow_discounts: true, // ✅ Enables discount codes in checkout!
       },
     };
 
