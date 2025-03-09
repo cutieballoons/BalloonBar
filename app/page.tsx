@@ -15,15 +15,14 @@ export default function BalloonBar() {
   const [showQR, setShowQR] = useState(false);
   const [checkoutURL, setCheckoutURL] = useState("");
 
-const addToCart = (balloon, event) => {
-  event.stopPropagation(); // Prevents accidental double-click issues
-  setCart((prev) => {
-    return prev.map((item) =>
-      item.id === balloon.id ? { ...item, quantity: item.quantity + 1 } : item
-    ).concat(prev.some((item) => item.id === balloon.id) ? [] : { ...balloon, quantity: 1 });
-  });
-};
-
+  const addToCart = (balloon, event) => {
+    event.stopPropagation(); // Prevents accidental double-click issues
+    setCart((prev) => {
+      return prev.map((item) =>
+        item.id === balloon.id ? { ...item, quantity: item.quantity + 1 } : item
+      ).concat(prev.some((item) => item.id === balloon.id) ? [] : { ...balloon, quantity: 1 });
+    });
+  };
 
   const removeFromCart = (id) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
@@ -52,10 +51,10 @@ const addToCart = (balloon, event) => {
       <h1 className="text-2xl font-bold mb-4">🎈 Build Your Balloon Bouquet 🎈</h1>
       <div className="grid grid-cols-2 gap-4">
         {balloons.map((balloon) => (
-          <div key={balloon.id} className="border p-4 rounded-lg text-center cursor-pointer" onClick={() => addToCart(balloon)}>
+          <div key={balloon.id} className="border p-4 rounded-lg text-center cursor-pointer" onClick={(event) => addToCart(balloon, event)}>
             <h2 className="font-semibold">{balloon.name}</h2>
             <p className="text-sm text-gray-600">${balloon.price.toFixed(2)}</p>
-            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => addToCart(balloon)}>Add</button>
+            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded" onClick={(event) => addToCart(balloon, event)}>Add</button>
           </div>
         ))}
       </div>
