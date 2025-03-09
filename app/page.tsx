@@ -13,6 +13,7 @@ const balloons = [
 export default function BalloonBar() {
   const [cart, setCart] = useState([]);
   const [showQR, setShowQR] = useState(false);
+  const [checkoutURL, setCheckoutURL] = useState("");
 
   const addToCart = (balloon) => {
     setCart((prev) => {
@@ -31,7 +32,22 @@ export default function BalloonBar() {
   };
 
   const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const cartData = JSON.stringify(cart);
+
+  const generateCheckout = async () => {
+    const response = await fetch("/api/create-draft-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cart }),
+    });
+
+    const data = await response.json();
+    if (data.checkoutUrl) {
+      setCheckoutURL(data.checkoutUrl);
+      setShowQR(true);
+    }
+  };
 
   return (
     <div className="p-4 max-w-lg mx-auto">
@@ -62,13 +78,13 @@ export default function BalloonBar() {
           </ul>
         )}
         <h3 className="text-lg font-bold mt-4">Total: ${totalCost.toFixed(2)}</h3>
-        <button className="mt-4 w-full bg-green-500 text-white px-4 py-2 rounded" onClick={() => setShowQR(true)}>
+        <button className="mt-4 w-full bg-green-500 text-white px-4 py-2 rounded" onClick={generateCheckout}>
           Generate QR for Checkout
         </button>
         {showQR && (
           <div className="mt-4 p-4 border rounded-lg text-center">
             <p className="mb-2">Show this QR at checkout:</p>
-            <QRCode value={cartData} size={150} />
+            <QRCode value={checkoutURL} size={150} />
           </div>
         )}
       </div>
