@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { useState } from "react";
 import { ShoppingCart, Trash } from "lucide-react";
 import QRCode from "react-qr-code";
 
