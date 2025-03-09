@@ -1,0 +1,79 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ShoppingCart, Trash } from "lucide-react";
+import QRCode from "react-qr-code";
+
+const balloons = [
+  { id: 1, name: "Pastel Pink Latex", price: 2.5 },
+  { id: 2, name: "Sage Green Latex", price: 2.5 },
+  { id: 3, name: "Gold Foil Star", price: 6.5 },
+  { id: 4, name: "Number '5' Gold", price: 8.0 },
+];
+
+export default function BalloonBar() {
+  const [cart, setCart] = useState([]);
+  const [showQR, setShowQR] = useState(false);
+
+  const addToCart = (balloon) => {
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === balloon.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.id === balloon.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { ...balloon, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (id) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const cartData = JSON.stringify(cart);
+
+  return (
+    <div className="p-4 max-w-lg mx-auto">
+      <h1 className="text-2xl font-bold mb-4">🎈 Build Your Balloon Bouquet 🎈</h1>
+      <div className="grid grid-cols-2 gap-4">
+        {balloons.map((balloon) => (
+          <Card key={balloon.id} className="p-4 text-center cursor-pointer" onClick={() => addToCart(balloon)}>
+            <CardContent>
+              <h2 className="font-semibold">{balloon.name}</h2>
+              <p className="text-sm text-gray-600">${balloon.price.toFixed(2)}</p>
+              <Button className="mt-2">Add</Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <div className="mt-6 border-t pt-4">
+        <h2 className="text-xl font-semibold">🛒 Your Custom Bouquet</h2>
+        {cart.length === 0 ? (
+          <p className="text-gray-500">No balloons selected.</p>
+        ) : (
+          <ul className="mt-2 space-y-2">
+            {cart.map((item) => (
+              <li key={item.id} className="flex justify-between items-center">
+                {item.name} (x{item.quantity}) - ${item.price * item.quantity}
+                <Button variant="destructive" size="sm" onClick={() => removeFromCart(item.id)}>
+                  <Trash size={14} />
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <h3 className="text-lg font-bold mt-4">Total: ${totalCost.toFixed(2)}</h3>
+        <Button className="mt-4 w-full" onClick={() => setShowQR(true)}>Generate QR for Checkout</Button>
+        {showQR && (
+          <div className="mt-4 p-4 border rounded-lg text-center">
+            <p className="mb-2">Show this QR at checkout:</p>
+            <QRCode value={cartData} size={150} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
