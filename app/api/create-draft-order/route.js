@@ -8,21 +8,22 @@ export async function POST(req) {
     const SHOPIFY_STORE_URL = "https://cutie-balloons.myshopify.com";
     const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 
-    // Create line items from the cart, setting "Pastel Pink Latex" to $0 for testing
-    const lineItems = cart.map((item) => ({
-      title: item.name,
-      price: item.name === "Pastel Pink Latex" ? 0.0 : item.price, // Set Pastel Pink Latex to $0
-      quantity: item.quantity,
-    }));
+    // Create a readable summary of selected balloons
+    const cartDetails = cart
+      .map((item) => `${item.quantity}x ${item.name}`)
+      .join(", ");
 
-    const totalCost = cart.reduce((acc, item) => acc + (item.name === "Pastel Pink Latex" ? 0 : item.price) * item.quantity, 0).toFixed(2);
+    const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
 
     const draftOrderPayload = {
       draft_order: {
-        line_items: lineItems,
-        allow_discounts: true, // ✅ Enables discounts
-        use_customer_default_address: true, // ✅ Helps Shopify treat it like a normal order
-        send_invoice: true, // ✅ Generates an invoice email with discount options
+        line_items: [
+          {
+            title: `Balloon Bouquet: ${cartDetails}`,
+            price: totalCost,
+            quantity: 1,
+          },
+        ],
       },
     };
 
