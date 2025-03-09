@@ -8,7 +8,11 @@ export async function POST(req) {
     const SHOPIFY_STORE_URL = "https://cutie-balloons.myshopify.com";
     const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 
-    // Create Draft Order Payload
+    // Create the draft order note
+    const cartDetails = cart
+      .map((item) => `- ${item.quantity}x ${item.name}`)
+      .join("\n");
+
     const draftOrderPayload = {
       draft_order: {
         line_items: [
@@ -18,6 +22,10 @@ export async function POST(req) {
             quantity: 1,
           },
         ],
+        note: `Customer selected:\n${cartDetails}\n\nTotal: $${cart.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        ).toFixed(2)}`,
       },
     };
 
