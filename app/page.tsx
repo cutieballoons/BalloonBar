@@ -39,13 +39,11 @@ export default function BalloonBar() {
       <h1 className="text-2xl font-bold mb-4">🎈 Build Your Balloon Bouquet 🎈</h1>
       <div className="grid grid-cols-2 gap-4">
         {balloons.map((balloon) => (
-          <Card key={balloon.id} className="p-4 text-center cursor-pointer" onClick={() => addToCart(balloon)}>
-            <CardContent>
-              <h2 className="font-semibold">{balloon.name}</h2>
-              <p className="text-sm text-gray-600">${balloon.price.toFixed(2)}</p>
-              <Button className="mt-2">Add</Button>
-            </CardContent>
-          </Card>
+          <div key={balloon.id} className="border p-4 rounded-lg text-center cursor-pointer" onClick={() => addToCart(balloon)}>
+  <h2 className="font-semibold">{balloon.name}</h2>
+  <p className="text-sm text-gray-600">${balloon.price.toFixed(2)}</p>
+  <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => addToCart(balloon)}>Add</button>
+</div>
         ))}
       </div>
       <div className="mt-6 border-t pt-4">
