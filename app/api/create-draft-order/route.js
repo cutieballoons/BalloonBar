@@ -8,14 +8,14 @@ export async function POST(req) {
     const SHOPIFY_STORE_URL = "https://cutie-balloons.myshopify.com";
     const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 
-    // Create line items from the cart
+    // Create line items from the cart, setting "Pastel Pink Latex" to $0 for testing
     const lineItems = cart.map((item) => ({
       title: item.name,
-      price: item.price,
+      price: item.name === "Pastel Pink Latex" ? 0.0 : item.price, // Set Pastel Pink Latex to $0
       quantity: item.quantity,
     }));
 
-    const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+    const totalCost = cart.reduce((acc, item) => acc + (item.name === "Pastel Pink Latex" ? 0 : item.price) * item.quantity, 0).toFixed(2);
 
     const draftOrderPayload = {
       draft_order: {
