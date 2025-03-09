@@ -15,17 +15,15 @@ export default function BalloonBar() {
   const [showQR, setShowQR] = useState(false);
   const [checkoutURL, setCheckoutURL] = useState("");
 
-  const addToCart = (balloon) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === balloon.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === balloon.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prev, { ...balloon, quantity: 1 }];
-    });
-  };
+const addToCart = (balloon, event) => {
+  event.stopPropagation(); // Prevents accidental double-click issues
+  setCart((prev) => {
+    return prev.map((item) =>
+      item.id === balloon.id ? { ...item, quantity: item.quantity + 1 } : item
+    ).concat(prev.some((item) => item.id === balloon.id) ? [] : { ...balloon, quantity: 1 });
+  });
+};
+
 
   const removeFromCart = (id) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
