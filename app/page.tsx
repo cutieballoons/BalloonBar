@@ -4,7 +4,7 @@ import { ShoppingCart, Trash } from "lucide-react";
 import QRCode from "react-qr-code";
 
 const balloons = [
-  { id: 1, name: "Pastel Pink Latex", price: 0 },
+  { id: 1, name: "Pastel Blue Latex", price: 0 },
   { id: 2, name: "Sage Green Latex", price: 2.5 },
   { id: 3, name: "Gold Foil Star", price: 6.5 },
   { id: 4, name: "Number '5' Gold", price: 8.0 },
