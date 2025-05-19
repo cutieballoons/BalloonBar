@@ -81,6 +81,13 @@ const foilBalloons = [
   { id: 120, name: "18\" Puppies Birthday", price: 15, category: "Birthday" }
 ];
 
+const weights = [
+  { id: 201, name: "Rose Gold Weight", price: 2.25 },
+  { id: 202, name: "Gold Weight", price: 2.25 },
+  { id: 203, name: "Silver Weight", price: 2.25 },
+  { id: 204, name: "Black Weight", price: 2.25 }
+];
+
 const balloonImageClass = (balloon) => {
   return balloon.category ? "balloon-image foil" : "balloon-image latex";
 };
@@ -118,6 +125,11 @@ export default function BalloonBar() {
   const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const saveBouquet = async () => {
+      const hasWeight = cart.some(item => item.id >= 200);
+        if (!hasWeight) {
+          alert("Please select a balloon weight before saving your bouquet.");
+          return;
+        }
     const response = await fetch("/api/create-draft-order", {
       method: "POST",
       headers: {
@@ -142,6 +154,7 @@ export default function BalloonBar() {
       <div className="step-buttons">
         <button className={step === "latex" ? "active" : ""} onClick={() => setStep("latex")}>Step 1: Latex Balloons</button>
         <button className={step === "foil" ? "active" : ""} onClick={() => setStep("foil")}>Step 2: Foil Balloons</button>
+        <button className={step === "weight" ? "active" : ""} onClick={() => setStep("weight")}>Step 3: Choose Weight (Required)</button>
       </div>
       {showConfirmation ? (
         <div className="confirmation">
@@ -235,6 +248,42 @@ export default function BalloonBar() {
                 })}
               </div>
             </>
+          )}
+
+          {step === "weight" && (
+            <div className="balloon-grid">
+              {weights.map((weight) => {
+                const imageName = weight.name.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, "-") + ".jpg";
+                const imageUrl = `/weights/${imageName}`;
+                const cartItem = cart.find((item) => item.id === weight.id);
+
+                return (
+                  <div key={weight.id} className="balloon-item">
+                    <img
+                      src={imageUrl}
+                      alt={weight.name}
+                      className="balloon-image"
+                      onError={(e) => (e.currentTarget.style.display = "none")}
+                    />
+                    <h2>{weight.name}</h2>
+                    <p>${weight.price.toFixed(2)}</p>
+                    <button onClick={(event) => {
+                      event.stopPropagation();
+                      // Ensure only one weight can be selected
+                      setCart((prev) => {
+                        const withoutWeights = prev.filter(item => item.id < 200);
+                        return [...withoutWeights, { ...weight, quantity: 1 }];
+                      });
+                    }}>
+                      Select
+                    </button>
+                    {cartItem && (
+                      <p>✅ Selected</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           )}
 
           <div className="cart">
