@@ -92,6 +92,44 @@ const balloonImageClass = (balloon) => {
   return balloon.category ? "balloon-image foil" : "balloon-image latex";
 };
 
+function CartSection({ cart, addToCart, decreaseQty, removeFromCart, saveBouquet, totalCost }) {
+  return (
+    <div className="cart sticky-cart">
+      <h2>Your Custom Bouquet 🛒</h2>
+      {cart.length === 0 ? (
+        <p>No balloons selected.</p>
+      ) : (
+        <ul>
+          {cart.map((item) => {
+            const imageName = item.name.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, "-") + ".jpg";
+            const imageFolder = item.category
+              ? "foils"
+              : item.id >= 200
+              ? "weights"
+              : "balloons";
+            const imageUrl = `/${imageFolder}/${imageName}`;
+
+            return (
+              <li key={item.id} className="cart-item">
+                <img src={imageUrl} alt={item.name} className="cart-thumbnail" />
+                <span>{item.name} - ${item.price * item.quantity}</span>
+                <div className="quantity-controls">
+                  <button onClick={() => decreaseQty(item.id)}>-</button>
+                  <span>{item.quantity}</span>
+                  <button onClick={(event) => addToCart(item, event)}>+</button>
+                  <button onClick={() => removeFromCart(item.id)}><Trash size={14} /></button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <h3>Total: ${totalCost.toFixed(2)}</h3>
+      <button onClick={saveBouquet}>Save My Bouquet</button>
+    </div>
+  );
+}
+
 export default function BalloonBar() {
   const [cart, setCart] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
