@@ -137,8 +137,8 @@ export default function BalloonBar() {
 
   return (
     <div className="container">
-      <img src="/cutie-logo.png" alt="Cutie Balloons Logo" className="logo" />
-      <h1 className="title">🎈 Build Your Balloon Bouquet 🎈</h1>
+      <img src="/cutie-logo.jpg" alt="Cutie Balloons Logo" className="logo" />
+      <h1 className="title"></h1>
       <div className="step-buttons">
         <button className={step === "latex" ? "active" : ""} onClick={() => setStep("latex")}>Step 1: Latex Balloons</button>
         <button className={step === "foil" ? "active" : ""} onClick={() => setStep("foil")}>Step 2: Foil Balloons</button>
