@@ -64,7 +64,7 @@ export default function BalloonBar() {
   const [orderName, setOrderName] = useState("");
 
   const addToCart = (balloon, event) => {
-    event.stopPropagation();
+    if (event) event.stopPropagation();
     setCart((prev) => {
       return prev.map((item) =>
         item.id === balloon.id ? { ...item, quantity: item.quantity + 1 } : item
@@ -163,8 +163,13 @@ export default function BalloonBar() {
               <ul>
                 {cart.map((item) => (
                   <li key={item.id}>
-                    {item.name} (x{item.quantity}) - ${item.price * item.quantity}
-                    <button onClick={() => removeFromCart(item.id)}><Trash size={14} /></button>
+                    {item.name} - ${item.price * item.quantity}
+                    <div className="quantity-controls">
+                      <button onClick={() => decreaseQty(item.id)}>-</button>
+                      <span>{item.quantity}</span>
+                      <button onClick={(event) => addToCart(item, event)}>+</button>
+                      <button onClick={() => removeFromCart(item.id)}><Trash size={14} /></button>
+                    </div>
                   </li>
                 ))}
               </ul>
