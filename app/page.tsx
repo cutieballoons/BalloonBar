@@ -81,6 +81,10 @@ const foilBalloons = [
   { id: 120, name: "18\" Puppies Birthday", price: 6.5, category: "Birthday" }
 ];
 
+const balloonImageClass = (balloon) => {
+  return balloon.category ? "balloon-image foil" : "balloon-image latex";
+};
+
 export default function BalloonBar() {
   const [cart, setCart] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -173,7 +177,6 @@ export default function BalloonBar() {
                       className={balloonImageClass(balloon)}
                       onError={(e) => (e.currentTarget.style.display = "none")}
                     />
-
                     <h2>{balloon.name}</h2>
                     <p>${balloon.price.toFixed(2)}</p>
                     <button onClick={(event) => addToCart(balloon, event)}>Add</button>
@@ -209,7 +212,7 @@ export default function BalloonBar() {
                       <img
                         src={imageUrl}
                         alt={balloon.name}
-                        className="balloon-image"
+                        className={balloonImageClass(balloon)}
                         onError={(e) => (e.currentTarget.style.display = "none")}
                       />
                       <h2>{balloon.name}</h2>
