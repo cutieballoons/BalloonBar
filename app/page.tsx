@@ -238,7 +238,7 @@ export default function BalloonBar() {
           )}
 
           <div className="cart">
-            <h2>🛒 Your Custom Bouquet</h2>
+            <h2>Your Custom Bouquet 🛒</h2>
             {cart.length === 0 ? (
               <p>No balloons selected.</p>
             ) : (
