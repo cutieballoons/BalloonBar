@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { ShoppingCart, Trash } from "lucide-react";
-import QRCode from "react-qr-code";
+import { Trash } from "lucide-react";
 import "./styles.css";
 
 const balloons = [
@@ -61,8 +60,8 @@ const balloons = [
 
 export default function BalloonBar() {
   const [cart, setCart] = useState([]);
-  const [showQR, setShowQR] = useState(false);
-  const [checkoutURL, setCheckoutURL] = useState("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [orderName, setOrderName] = useState("");
 
   const addToCart = (balloon, event) => {
     event.stopPropagation();
@@ -89,7 +88,7 @@ export default function BalloonBar() {
 
   const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const generateCheckout = async () => {
+  const saveBouquet = async () => {
     const response = await fetch("/api/create-draft-order", {
       method: "POST",
       headers: {
@@ -99,66 +98,70 @@ export default function BalloonBar() {
     });
 
     const data = await response.json();
-    if (data.checkoutUrl) {
-      setCheckoutURL(data.checkoutUrl);
-      setShowQR(true);
+    if (data.name) {
+      setOrderName(data.name);
+      setShowConfirmation(true);
     }
   };
 
   return (
     <div className="container">
       <h1 className="title">🎈 Build Your Balloon Bouquet 🎈</h1>
-        <div className="balloon-grid">
-          {balloons.map((balloon) => {
-            const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
-            const imageUrl = `/balloons/${imageName}`;
-            const cartItem = cart.find((item) => item.id === balloon.id);
-
-            return (
-              <div key={balloon.id} className="balloon-item">
-                <img
-                  src={imageUrl}
-                  alt={balloon.name}
-                  className="balloon-image"
-                  onError={(e) => (e.currentTarget.style.display = "none")}
-                />
-                <h2>{balloon.name}</h2>
-                <p>${balloon.price.toFixed(2)}</p>
-                <button onClick={(event) => addToCart(balloon, event)}>Add</button>
-                {cartItem && (
-                  <div className="quantity-controls">
-                    <button onClick={() => decreaseQty(balloon.id)}>-</button>
-                    <span>{cartItem.quantity}</span>
-                    <button onClick={(event) => addToCart(balloon, event)}>+</button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+      {showConfirmation ? (
+        <div className="confirmation">
+          <h2>🎉 Your bouquet is saved!</h2>
+          <p><strong>Order ID:</strong> {orderName}</p>
+          <p>Show this screen to a team member. They’ll pull up your custom bouquet in our system.</p>
         </div>
-      <div className="cart">
-        <h2>🛒 Your Custom Bouquet</h2>
-        {cart.length === 0 ? (
-          <p>No balloons selected.</p>
-        ) : (
-          <ul>
-            {cart.map((item) => (
-              <li key={item.id}>
-                {item.name} (x{item.quantity}) - ${item.price * item.quantity}
-                <button onClick={() => removeFromCart(item.id)}><Trash size={14} /></button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <h3>Total: ${totalCost.toFixed(2)}</h3>
-        <button onClick={generateCheckout}>Generate QR for Checkout</button>
-        {showQR && (
-          <div className="qr-container">
-            <p>Show this QR at checkout:</p>
-            <QRCode value={checkoutURL} size={150} />
+      ) : (
+        <>
+          <div className="balloon-grid">
+            {balloons.map((balloon) => {
+              const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
+              const imageUrl = `/balloons/${imageName}`;
+              const cartItem = cart.find((item) => item.id === balloon.id);
+
+              return (
+                <div key={balloon.id} className="balloon-item">
+                  <img
+                    src={imageUrl}
+                    alt={balloon.name}
+                    className="balloon-image"
+                    onError={(e) => (e.currentTarget.style.display = "none")}
+                  />
+                  <h2>{balloon.name}</h2>
+                  <p>${balloon.price.toFixed(2)}</p>
+                  <button onClick={(event) => addToCart(balloon, event)}>Add</button>
+                  {cartItem && (
+                    <div className="quantity-controls">
+                      <button onClick={() => decreaseQty(balloon.id)}>-</button>
+                      <span>{cartItem.quantity}</span>
+                      <button onClick={(event) => addToCart(balloon, event)}>+</button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-        )}
-      </div>
+          <div className="cart">
+            <h2>🛒 Your Custom Bouquet</h2>
+            {cart.length === 0 ? (
+              <p>No balloons selected.</p>
+            ) : (
+              <ul>
+                {cart.map((item) => (
+                  <li key={item.id}>
+                    {item.name} (x{item.quantity}) - ${item.price * item.quantity}
+                    <button onClick={() => removeFromCart(item.id)}><Trash size={14} /></button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <h3>Total: ${totalCost.toFixed(2)}</h3>
+            <button onClick={saveBouquet}>Save My Bouquet</button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
