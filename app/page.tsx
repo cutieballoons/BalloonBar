@@ -59,10 +59,10 @@ const latexBalloons = [
 ];
 
 const foilBalloons = [
-  { id: 101, name: "Happy Birthday Star", price: 6.5, category: "Birthday" },
+  { id: 101, name: "Happy Birthday Star", price: 6.5, category: "Shapes" },
   { id: 102, name: "Number 1 Gold", price: 8.0, category: "Number Balloons" },
   { id: 103, name: "Number 2 Gold", price: 8.0, category: "Number Balloons" },
-  { id: 104, name: "Congrats Balloon", price: 6.5, category: "Birthday" },
+  { id: 104, name: "Congrats Balloon", price: 6.5, category: "Shapes" },
   { id: 105, name: "Dinosaur Shape", price: 9.0, category: "Shapes" },
   { id: 106, name: "Champagne Bottle", price: 10.0, category: "Shapes" },
   { id: 107, name: "Jumbo Water Colour Birthday", price: 7.5, category: "Birthday" },
@@ -170,9 +170,10 @@ export default function BalloonBar() {
                     <img
                       src={imageUrl}
                       alt={balloon.name}
-                      className="balloon-image"
+                      className={balloonImageClass(balloon)}
                       onError={(e) => (e.currentTarget.style.display = "none")}
                     />
+
                     <h2>{balloon.name}</h2>
                     <p>${balloon.price.toFixed(2)}</p>
                     <button onClick={(event) => addToCart(balloon, event)}>Add</button>
