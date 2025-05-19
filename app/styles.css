@@ -8,12 +8,19 @@ body {
 
 /* Grid Styling */
 .balloon-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr); /* Creates 6 equal columns */
-    gap: 15px;
-    max-width: 1200px;
-    margin: auto;
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(4, 1fr); /* default: mobile = 4 columns */
+  max-width: 1200px;
+  margin: auto;
 }
+
+@media (min-width: 1024px) {
+  .balloon-grid {
+    grid-template-columns: repeat(6, 1fr); /* desktop = 6 columns */
+  }
+}
+
 
 /* Individual Product Styling */
 .balloon-item {
