@@ -244,7 +244,14 @@ export default function BalloonBar() {
         );
       })}
     </div>
-    <CartSection />
+    <CartSection
+  cart={cart}
+  addToCart={addToCart}
+  decreaseQty={decreaseQty}
+  removeFromCart={removeFromCart}
+  saveBouquet={saveBouquet}
+  totalCost={totalCost}
+/>
   </div>
 )}
 
@@ -284,7 +291,14 @@ export default function BalloonBar() {
         );
       })}
     </div>
-    <CartSection />
+    <CartSection
+  cart={cart}
+  addToCart={addToCart}
+  decreaseQty={decreaseQty}
+  removeFromCart={removeFromCart}
+  saveBouquet={saveBouquet}
+  totalCost={totalCost}
+/>
   </div>
 )}
 
@@ -320,7 +334,14 @@ export default function BalloonBar() {
         );
       })}
     </div>
-    <CartSection />
+    <CartSection
+  cart={cart}
+  addToCart={addToCart}
+  decreaseQty={decreaseQty}
+  removeFromCart={removeFromCart}
+  saveBouquet={saveBouquet}
+  totalCost={totalCost}
+/>
   </div>
 )}
         </>
