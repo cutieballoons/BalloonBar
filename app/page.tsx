@@ -64,180 +64,19 @@ const foilBalloons = [
   { id: 103, name: "Number 2 Gold", price: 8.0, category: "Number Balloons" },
   { id: 104, name: "Congrats Balloon", price: 6.5, category: "Birthday" },
   { id: 105, name: "Dinosaur Shape", price: 9.0, category: "Shapes" },
-  { id: 106, name: "Champagne Bottle", price: 10.0, category: "Shapes" }
+  { id: 106, name: "Champagne Bottle", price: 10.0, category: "Shapes" },
+  { id: 107, name: "Jumbo Water Colour Birthday", price: 7.5, category: "Birthday" },
+  { id: 108, name: "Jumbo Bright Birthday", price: 7.5, category: "Birthday" },
+  { id: 109, name: "Jumbo Turquoise Birthday", price: 7.5, category: "Birthday" },
+  { id: 110, name: "Jumbo Rose Gold Birthday", price: 7.5, category: "Birthday" },
+  { id: 111, name: "Jumbo Holographic Birthday", price: 7.5, category: "Birthday" },
+  { id: 112, name: "Jumbo Skater Birthday", price: 7.5, category: "Birthday" },
+  { id: 113, name: "18” Rose Gold Ombre Birthday", price: 6.5, category: "Birthday" },
+  { id: 114, name: "18” Floral Heart Birthday", price: 6.5, category: "Birthday" },
+  { id: 115, name: "18” Pink Gold Dots Birthday", price: 6.5, category: "Birthday" },
+  { id: 116, name: "18” Daisies Birthday", price: 6.5, category: "Birthday" },
+  { id: 117, name: "18” Modern Navy Birthday", price: 6.5, category: "Birthday" },
+  { id: 118, name: "18” Make a Wish Birthday", price: 6.5, category: "Birthday" },
+  { id: 119, name: "18” Sparkle Holographic Birthday", price: 6.5, category: "Birthday" },
+  { id: 120, name: "18” Puppies Birthday", price: 6.5, category: "Birthday" }
 ];
-
-export default function BalloonBar() {
-  const [cart, setCart] = useState([]);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [orderName, setOrderName] = useState("");
-  const [step, setStep] = useState("latex");
-  const [foilFilter, setFoilFilter] = useState("All");
-
-  const addToCart = (balloon, event) => {
-    if (event) event.stopPropagation();
-    setCart((prev) => {
-      return prev.map((item) =>
-        item.id === balloon.id ? { ...item, quantity: item.quantity + 1 } : item
-      ).concat(prev.some((item) => item.id === balloon.id) ? [] : { ...balloon, quantity: 1 });
-    });
-  };
-
-  const decreaseQty = (id) => {
-    setCart((prev) =>
-      prev
-        .map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
-  };
-
-  const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
-  const saveBouquet = async () => {
-    const response = await fetch("/api/create-draft-order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ cart }),
-    });
-
-    const data = await response.json();
-    if (data.name) {
-      setOrderName(data.name);
-      setShowConfirmation(true);
-    }
-  };
-
-  const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
-
-  return (
-    <div className="container">
-      <h1 className="title">🎈 Build Your Balloon Bouquet 🎈</h1>
-      <div className="step-buttons">
-        <button className={step === "latex" ? "active" : ""} onClick={() => setStep("latex")}>Step 1: Latex Balloons</button>
-        <button className={step === "foil" ? "active" : ""} onClick={() => setStep("foil")}>Step 2: Foil Balloons</button>
-      </div>
-      {showConfirmation ? (
-        <div className="confirmation">
-          <h2>🎉 Your bouquet is saved!</h2>
-          <p><strong>Order ID:</strong> {orderName}</p>
-          <p>Show this screen to a team member. They’ll pull up your custom bouquet in our system.</p>
-          <div className="confirmation-buttons">
-            <button onClick={() => {
-              setCart([]);
-              setOrderName("");
-              setShowConfirmation(false);
-            }}>
-              Start New Session
-            </button>
-            <button onClick={() => setShowConfirmation(false)}>
-              Edit This Bouquet
-            </button>
-          </div>
-        </div>
-      ) : (
-        <>
-          {step === "latex" && (
-            <div className="balloon-grid">
-              {latexBalloons.map((balloon) => {
-                const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
-                const imageUrl = `/balloons/${imageName}`;
-                const cartItem = cart.find((item) => item.id === balloon.id);
-
-                return (
-                  <div key={balloon.id} className="balloon-item">
-                    <img
-                      src={imageUrl}
-                      alt={balloon.name}
-                      className="balloon-image"
-                      onError={(e) => (e.currentTarget.style.display = "none")}
-                    />
-                    <h2>{balloon.name}</h2>
-                    <p>${balloon.price.toFixed(2)}</p>
-                    <button onClick={(event) => addToCart(balloon, event)}>Add</button>
-                    {cartItem && (
-                      <div className="quantity-controls">
-                        <button onClick={() => decreaseQty(balloon.id)}>-</button>
-                        <span>{cartItem.quantity}</span>
-                        <button onClick={(event) => addToCart(balloon, event)}>+</button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {step === "foil" && (
-            <>
-              <div className="filters">
-                <button onClick={() => setFoilFilter("All")} className={foilFilter === "All" ? "active" : ""}>All</button>
-                <button onClick={() => setFoilFilter("Birthday")} className={foilFilter === "Birthday" ? "active" : ""}>Birthday</button>
-                <button onClick={() => setFoilFilter("Number Balloons")} className={foilFilter === "Number Balloons" ? "active" : ""}>Number Balloons</button>
-                <button onClick={() => setFoilFilter("Shapes")} className={foilFilter === "Shapes" ? "active" : ""}>Shapes</button>
-              </div>
-              <div className="balloon-grid">
-                {displayedFoils.map((balloon) => {
-                  const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
-                  const imageUrl = `/foils/${imageName}`;
-                  const cartItem = cart.find((item) => item.id === balloon.id);
-
-                  return (
-                    <div key={balloon.id} className="balloon-item">
-                      <img
-                        src={imageUrl}
-                        alt={balloon.name}
-                        className="balloon-image"
-                        onError={(e) => (e.currentTarget.style.display = "none")}
-                      />
-                      <h2>{balloon.name}</h2>
-                      <p>${balloon.price.toFixed(2)}</p>
-                      <button onClick={(event) => addToCart(balloon, event)}>Add</button>
-                      {cartItem && (
-                        <div className="quantity-controls">
-                          <button onClick={() => decreaseQty(balloon.id)}>-</button>
-                          <span>{cartItem.quantity}</span>
-                          <button onClick={(event) => addToCart(balloon, event)}>+</button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
-
-          <div className="cart">
-            <h2>🛒 Your Custom Bouquet</h2>
-            {cart.length === 0 ? (
-              <p>No balloons selected.</p>
-            ) : (
-              <ul>
-                {cart.map((item) => (
-                  <li key={item.id}>
-                    {item.name} - ${item.price * item.quantity}
-                    <div className="quantity-controls">
-                      <button onClick={() => decreaseQty(item.id)}>-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={(event) => addToCart(item, event)}>+</button>
-                      <button onClick={() => removeFromCart(item.id)}><Trash size={14} /></button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <h3>Total: ${totalCost.toFixed(2)}</h3>
-            <button onClick={saveBouquet}>Save My Bouquet</button>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
