@@ -112,6 +112,18 @@ export default function BalloonBar() {
           <h2>🎉 Your bouquet is saved!</h2>
           <p><strong>Order ID:</strong> {orderName}</p>
           <p>Show this screen to a team member. They’ll pull up your custom bouquet in our system.</p>
+          <div className="confirmation-buttons">
+            <button onClick={() => {
+              setCart([]);
+              setOrderName("");
+              setShowConfirmation(false);
+            }}>
+              Start New Session
+            </button>
+            <button onClick={() => setShowConfirmation(false)}>
+              Edit This Bouquet
+            </button>
+          </div>
         </div>
       ) : (
         <>
