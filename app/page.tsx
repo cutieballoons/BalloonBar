@@ -56,7 +56,7 @@ const balloons = [
   { id: 49, name: "Chrome Gold", price: 3.25 },
   { id: 50, name: "Chrome Rose Gold", price: 3.25 },
   { id: 51, name: "Chrome Purple", price: 3.25 },
-  { id: 52, name: "Chrome Blue", price: 3.25 },
+  { id: 52, name: "Chrome Blue", price: 3.25 }
 ];
 
 export default function BalloonBar() {
@@ -65,12 +65,22 @@ export default function BalloonBar() {
   const [checkoutURL, setCheckoutURL] = useState("");
 
   const addToCart = (balloon, event) => {
-    event.stopPropagation(); // Prevents accidental double-click issues
+    event.stopPropagation();
     setCart((prev) => {
       return prev.map((item) =>
         item.id === balloon.id ? { ...item, quantity: item.quantity + 1 } : item
       ).concat(prev.some((item) => item.id === balloon.id) ? [] : { ...balloon, quantity: 1 });
     });
+  };
+
+  const decreaseQty = (id) => {
+    setCart((prev) =>
+      prev
+        .map((item) =>
+          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
   };
 
   const removeFromCart = (id) => {
@@ -102,6 +112,7 @@ export default function BalloonBar() {
           {balloons.map((balloon) => {
             const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
             const imageUrl = `/balloons/${imageName}`;
+            const cartItem = cart.find((item) => item.id === balloon.id);
 
             return (
               <div key={balloon.id} className="balloon-item">
@@ -114,6 +125,13 @@ export default function BalloonBar() {
                 <h2>{balloon.name}</h2>
                 <p>${balloon.price.toFixed(2)}</p>
                 <button onClick={(event) => addToCart(balloon, event)}>Add</button>
+                {cartItem && (
+                  <div className="quantity-controls">
+                    <button onClick={() => decreaseQty(balloon.id)}>-</button>
+                    <span>{cartItem.quantity}</span>
+                    <button onClick={(event) => addToCart(balloon, event)}>+</button>
+                  </div>
+                )}
               </div>
             );
           })}
