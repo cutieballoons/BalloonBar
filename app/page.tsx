@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Trash } from "lucide-react";
 import "./styles.css";
 
-const balloons = [
+const latexBalloons = [
   { id: 1, name: "Diamond Clear", price: 3.25 },
   { id: 2, name: "White", price: 3.25 },
   { id: 3, name: "Pearl White", price: 3.25 },
@@ -58,10 +58,21 @@ const balloons = [
   { id: 52, name: "Chrome Blue", price: 3.25 }
 ];
 
+const foilBalloons = [
+  { id: 101, name: "Happy Birthday Star", price: 6.5, category: "Birthday" },
+  { id: 102, name: "Number 1 Gold", price: 8.0, category: "Number Balloons" },
+  { id: 103, name: "Number 2 Gold", price: 8.0, category: "Number Balloons" },
+  { id: 104, name: "Congrats Balloon", price: 6.5, category: "Birthday" },
+  { id: 105, name: "Dinosaur Shape", price: 9.0, category: "Shapes" },
+  { id: 106, name: "Champagne Bottle", price: 10.0, category: "Shapes" }
+];
+
 export default function BalloonBar() {
   const [cart, setCart] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [orderName, setOrderName] = useState("");
+  const [step, setStep] = useState("latex");
+  const [foilFilter, setFoilFilter] = useState("All");
 
   const addToCart = (balloon, event) => {
     if (event) event.stopPropagation();
@@ -104,9 +115,15 @@ export default function BalloonBar() {
     }
   };
 
+  const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
+
   return (
     <div className="container">
       <h1 className="title">🎈 Build Your Balloon Bouquet 🎈</h1>
+      <div className="step-buttons">
+        <button className={step === "latex" ? "active" : ""} onClick={() => setStep("latex")}>Step 1: Latex Balloons</button>
+        <button className={step === "foil" ? "active" : ""} onClick={() => setStep("foil")}>Step 2: Foil Balloons</button>
+      </div>
       {showConfirmation ? (
         <div className="confirmation">
           <h2>🎉 Your bouquet is saved!</h2>
@@ -127,34 +144,76 @@ export default function BalloonBar() {
         </div>
       ) : (
         <>
-          <div className="balloon-grid">
-            {balloons.map((balloon) => {
-              const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
-              const imageUrl = `/balloons/${imageName}`;
-              const cartItem = cart.find((item) => item.id === balloon.id);
+          {step === "latex" && (
+            <div className="balloon-grid">
+              {latexBalloons.map((balloon) => {
+                const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
+                const imageUrl = `/balloons/${imageName}`;
+                const cartItem = cart.find((item) => item.id === balloon.id);
 
-              return (
-                <div key={balloon.id} className="balloon-item">
-                  <img
-                    src={imageUrl}
-                    alt={balloon.name}
-                    className="balloon-image"
-                    onError={(e) => (e.currentTarget.style.display = "none")}
-                  />
-                  <h2>{balloon.name}</h2>
-                  <p>${balloon.price.toFixed(2)}</p>
-                  <button onClick={(event) => addToCart(balloon, event)}>Add</button>
-                  {cartItem && (
-                    <div className="quantity-controls">
-                      <button onClick={() => decreaseQty(balloon.id)}>-</button>
-                      <span>{cartItem.quantity}</span>
-                      <button onClick={(event) => addToCart(balloon, event)}>+</button>
+                return (
+                  <div key={balloon.id} className="balloon-item">
+                    <img
+                      src={imageUrl}
+                      alt={balloon.name}
+                      className="balloon-image"
+                      onError={(e) => (e.currentTarget.style.display = "none")}
+                    />
+                    <h2>{balloon.name}</h2>
+                    <p>${balloon.price.toFixed(2)}</p>
+                    <button onClick={(event) => addToCart(balloon, event)}>Add</button>
+                    {cartItem && (
+                      <div className="quantity-controls">
+                        <button onClick={() => decreaseQty(balloon.id)}>-</button>
+                        <span>{cartItem.quantity}</span>
+                        <button onClick={(event) => addToCart(balloon, event)}>+</button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {step === "foil" && (
+            <>
+              <div className="filters">
+                <button onClick={() => setFoilFilter("All")} className={foilFilter === "All" ? "active" : ""}>All</button>
+                <button onClick={() => setFoilFilter("Birthday")} className={foilFilter === "Birthday" ? "active" : ""}>Birthday</button>
+                <button onClick={() => setFoilFilter("Number Balloons")} className={foilFilter === "Number Balloons" ? "active" : ""}>Number Balloons</button>
+                <button onClick={() => setFoilFilter("Shapes")} className={foilFilter === "Shapes" ? "active" : ""}>Shapes</button>
+              </div>
+              <div className="balloon-grid">
+                {displayedFoils.map((balloon) => {
+                  const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
+                  const imageUrl = `/foils/${imageName}`;
+                  const cartItem = cart.find((item) => item.id === balloon.id);
+
+                  return (
+                    <div key={balloon.id} className="balloon-item">
+                      <img
+                        src={imageUrl}
+                        alt={balloon.name}
+                        className="balloon-image"
+                        onError={(e) => (e.currentTarget.style.display = "none")}
+                      />
+                      <h2>{balloon.name}</h2>
+                      <p>${balloon.price.toFixed(2)}</p>
+                      <button onClick={(event) => addToCart(balloon, event)}>Add</button>
+                      {cartItem && (
+                        <div className="quantity-controls">
+                          <button onClick={() => decreaseQty(balloon.id)}>-</button>
+                          <span>{cartItem.quantity}</span>
+                          <button onClick={(event) => addToCart(balloon, event)}>+</button>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
           <div className="cart">
             <h2>🛒 Your Custom Bouquet</h2>
             {cart.length === 0 ? (
