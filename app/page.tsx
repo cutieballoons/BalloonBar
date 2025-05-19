@@ -62,15 +62,26 @@ export default function BalloonBar() {
   return (
     <div className="container">
       <h1 className="title">🎈 Build Your Balloon Bouquet 🎈</h1>
-      <div className="balloon-grid">
-        {balloons.map((balloon) => (
-          <div key={balloon.id} className="balloon-item">
-            <h2>{balloon.name}</h2>
-            <p>${balloon.price.toFixed(2)}</p>
-            <button onClick={(event) => addToCart(balloon, event)}>Add</button>
-          </div>
-        ))}
-      </div>
+        <div className="balloon-grid">
+          {balloons.map((balloon) => {
+            const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
+            const imageUrl = `/balloons/${imageName}`;
+
+            return (
+              <div key={balloon.id} className="balloon-item">
+                <img
+                  src={imageUrl}
+                  alt={balloon.name}
+                  className="balloon-image"
+                  onError={(e) => (e.currentTarget.style.display = "none")}
+                />
+                <h2>{balloon.name}</h2>
+                <p>${balloon.price.toFixed(2)}</p>
+                <button onClick={(event) => addToCart(balloon, event)}>Add</button>
+              </div>
+            );
+          })}
+        </div>
       <div className="cart">
         <h2>🛒 Your Custom Bouquet</h2>
         {cart.length === 0 ? (

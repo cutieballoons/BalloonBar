@@ -47,6 +47,17 @@ body {
     background: #e6559c;
 }
 
+.balloon-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Cart Styling */
 .cart {
     margin-top: 30px;
