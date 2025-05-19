@@ -185,3 +185,43 @@ body {
 .filters button.active {
   background-color: #ff66b2;
 }
+
+.confirmation {
+  text-align: center;
+  margin: 40px auto;
+  max-width: 500px;
+  padding: 30px;
+}
+
+.confirmation h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.confirmation p {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.confirmation-buttons button {
+  background-color: #ff66b2;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirmation-buttons button:hover {
+  background-color: #ff66b2;
+}
