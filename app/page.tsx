@@ -59,26 +59,26 @@ const latexBalloons = [
 ];
 
 const foilBalloons = [
-  { id: 101, name: "Happy Birthday Star", price: 6.5, category: "Shapes" },
+  { id: 101, name: "Happy Birthday Star", price: 15, category: "Shapes" },
   { id: 102, name: "Number 1 Gold", price: 8.0, category: "Number Balloons" },
   { id: 103, name: "Number 2 Gold", price: 8.0, category: "Number Balloons" },
-  { id: 104, name: "Congrats Balloon", price: 6.5, category: "Shapes" },
+  { id: 104, name: "Congrats Balloon", price: 15, category: "Shapes" },
   { id: 105, name: "Dinosaur Shape", price: 9.0, category: "Shapes" },
   { id: 106, name: "Champagne Bottle", price: 10.0, category: "Shapes" },
-  { id: 107, name: "Jumbo Water Colour Birthday", price: 7.5, category: "Birthday" },
-  { id: 108, name: "Jumbo Bright Birthday", price: 7.5, category: "Birthday" },
-  { id: 109, name: "Jumbo Turquoise Birthday", price: 7.5, category: "Birthday" },
-  { id: 110, name: "Jumbo Rose Gold Birthday", price: 7.5, category: "Birthday" },
-  { id: 111, name: "Jumbo Holographic Birthday", price: 7.5, category: "Birthday" },
-  { id: 112, name: "Jumbo Skater Birthday", price: 7.5, category: "Birthday" },
-  { id: 113, name: "18\" Rose Gold Ombre Birthday", price: 6.5, category: "Birthday" },
-  { id: 114, name: "18\" Floral Heart Birthday", price: 6.5, category: "Birthday" },
-  { id: 115, name: "18\" Pink Gold Dots Birthday", price: 6.5, category: "Birthday" },
-  { id: 116, name: "18\" Daisies Birthday", price: 6.5, category: "Birthday" },
-  { id: 117, name: "18\" Modern Navy Birthday", price: 6.5, category: "Birthday" },
-  { id: 118, name: "18\" Make a Wish Birthday", price: 6.5, category: "Birthday" },
-  { id: 119, name: "18\" Sparkle Holographic Birthday", price: 6.5, category: "Birthday" },
-  { id: 120, name: "18\" Puppies Birthday", price: 6.5, category: "Birthday" }
+  { id: 107, name: "Jumbo Water Colour Birthday", price: 28, category: "Birthday" },
+  { id: 108, name: "Jumbo Bright Birthday", price: 28, category: "Birthday" },
+  { id: 109, name: "Jumbo Turquoise Birthday", price: 28, category: "Birthday" },
+  { id: 110, name: "Jumbo Rose Gold Birthday", price: 28, category: "Birthday" },
+  { id: 111, name: "Jumbo Holographic Birthday", price: 28, category: "Birthday" },
+  { id: 112, name: "Jumbo Skater Birthday", price: 28, category: "Birthday" },
+  { id: 113, name: "18\" Rose Gold Ombre Birthday", price: 15, category: "Birthday" },
+  { id: 114, name: "18\" Floral Heart Birthday", price: 15, category: "Birthday" },
+  { id: 115, name: "18\" Pink Gold Dots Birthday", price: 15, category: "Birthday" },
+  { id: 116, name: "18\" Daisies Birthday", price: 15, category: "Birthday" },
+  { id: 117, name: "18\" Modern Navy Birthday", price: 15, category: "Birthday" },
+  { id: 118, name: "18\" Make a Wish Birthday", price: 15, category: "Birthday" },
+  { id: 119, name: "18\" Sparkle Holographic Birthday", price: 15, category: "Birthday" },
+  { id: 120, name: "18\" Puppies Birthday", price: 15, category: "Birthday" }
 ];
 
 const balloonImageClass = (balloon) => {
@@ -137,6 +137,7 @@ export default function BalloonBar() {
 
   return (
     <div className="container">
+      <img src="/cutie-logo.png" alt="Cutie Balloons Logo" className="logo" />
       <h1 className="title">🎈 Build Your Balloon Bouquet 🎈</h1>
       <div className="step-buttons">
         <button className={step === "latex" ? "active" : ""} onClick={() => setStep("latex")}>Step 1: Latex Balloons</button>

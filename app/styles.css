@@ -6,6 +6,13 @@ body {
     background-color: #f9f9f9;
 }
 
+.logo {
+  display: block;
+  max-width: 200px;
+  height: auto;
+  margin: 20px auto;
+}
+
 /* Grid Styling */
 .balloon-grid {
   display: grid;
