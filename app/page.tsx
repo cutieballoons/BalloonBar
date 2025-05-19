@@ -203,7 +203,11 @@ export default function BalloonBar() {
               </div>
               <div className="balloon-grid">
                 {displayedFoils.map((balloon) => {
-                  const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
+                  const imageName = balloon.name
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s]/g, "") // removes quotes and special characters
+                    .replace(/\s+/g, "-") + ".jpg";
+
                   const imageUrl = `/foils/${imageName}`;
                   const cartItem = cart.find((item) => item.id === balloon.id);
 
