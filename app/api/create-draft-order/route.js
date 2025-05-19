@@ -4,11 +4,9 @@ export async function POST(req) {
   try {
     const { cart } = await req.json();
 
-    // Shopify Store Credentials
     const SHOPIFY_STORE_URL = "https://cutie-balloons.myshopify.com";
     const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 
-    // Create a readable summary of selected balloons
     const cartDetails = cart
       .map((item) => `${item.quantity}x ${item.name}`)
       .join(", ");
@@ -27,7 +25,6 @@ export async function POST(req) {
       },
     };
 
-    // Send request to Shopify API
     const response = await fetch(`${SHOPIFY_STORE_URL}/admin/api/2024-01/draft_orders.json`, {
       method: "POST",
       headers: {
@@ -42,10 +39,10 @@ export async function POST(req) {
       throw new Error(data.errors ? JSON.stringify(data.errors) : "Failed to create draft order");
     }
 
-    return NextResponse.json({ checkoutUrl: data.draft_order.invoice_url });
+    // ✅ THIS is what your frontend needs now:
+    return NextResponse.json({ name: data.draft_order.name });
+
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
-return NextResponse.json({ name: draftOrder.name });
