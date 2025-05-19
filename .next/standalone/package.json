@@ -1,0 +1,23 @@
+{
+  "name": "balloon-bar",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "lucide-react": "^0.258.0",
+    "next": "^15.2.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-qr-code": "^2.0.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.12",
+    "@types/node": "^18.0.0",
+    "@types/react": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}
