@@ -297,14 +297,15 @@ export default function BalloonBar() {
         })}
       </div>
     </div>
-    CartSection
-  cart={cart}
-  addToCart={addToCart}
-  decreaseQty={decreaseQty}
-  removeFromCart={removeFromCart}
-  saveBouquet={saveBouquet}
-  totalCost={totalCost}
-/>
+    <CartSection
+      cart={cart}
+      addToCart={addToCart}
+      decreaseQty={decreaseQty}
+      removeFromCart={removeFromCart}
+      saveBouquet={saveBouquet}
+      totalCost={totalCost}
+    />
+  </div>
   </div>
 )}
 
