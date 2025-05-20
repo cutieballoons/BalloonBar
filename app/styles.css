@@ -15,11 +15,11 @@ body {
 
 /* Grid Styling */
 .balloon-grid {
+  flex: 1;
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 15px;
-  grid-template-columns: repeat(4, 1fr); /* default: mobile = 4 columns */
-  max-width: 1200px;
-  margin: auto;
+  max-width: 100%;
 }
 
 @media (min-width: 1024px) {
@@ -28,6 +28,16 @@ body {
   }
 }
 
+.sticky-cart {
+  width: 300px;
+  position: sticky;
+  top: 100px;
+  align-self: flex-start;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 
 /* Individual Product Styling */
 .balloon-item {
@@ -232,3 +242,11 @@ body {
 .confirmation-buttons button:hover {
   background-color: #ff66b2;
 }
+
+.main-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  margin-top: 40px;
+}
+
