@@ -257,50 +257,50 @@ export default function BalloonBar() {
 
 {step === "foil" && (
   <div className="main-layout">
-    <div className="filters">
-      <button onClick={() => setFoilFilter("All")} className={foilFilter === "All" ? "active" : ""}>All</button>
-      <button onClick={() => setFoilFilter("Birthday")} className={foilFilter === "Birthday" ? "active" : ""}>Birthday</button>
-      <button onClick={() => setFoilFilter("Number Balloons")} className={foilFilter === "Number Balloons" ? "active" : ""}>Number Balloons</button>
-      <button onClick={() => setFoilFilter("Shapes")} className={foilFilter === "Shapes" ? "active" : ""}>Shapes</button>
-    </div>
-    <div className="balloon-grid">
-      {displayedFoils.map((balloon) => {
-        const imageName = balloon.name.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, "-") + ".jpg";
-        const imageUrl = `/foils/${imageName}`;
-        const cartItem = cart.find((item) => item.id === balloon.id);
+    <div className="left-column">
+      <div className="filters">
+        <button onClick={() => setFoilFilter("All")} className={foilFilter === "All" ? "active" : ""}>All</button>
+        <button onClick={() => setFoilFilter("Birthday")} className={foilFilter === "Birthday" ? "active" : ""}>Birthday</button>
+        <button onClick={() => setFoilFilter("Number Balloons")} className={foilFilter === "Number Balloons" ? "active" : ""}>Number Balloons</button>
+        <button onClick={() => setFoilFilter("Shapes")} className={foilFilter === "Shapes" ? "active" : ""}>Shapes</button>
+      </div>
 
-        return (
-          <div key={balloon.id} className="balloon-item">
-            <img
-              src={imageUrl}
-              alt={balloon.name}
-              className={balloonImageClass(balloon)}
-              onError={(e) => (e.currentTarget.style.display = "none")}
-            />
-            <h2>{balloon.name}</h2>
-            <p>${balloon.price.toFixed(2)}</p>
-            <button onClick={(event) => addToCart(balloon, event)}>Add</button>
-            {cartItem && (
-              <div className="quantity-controls">
-                <button onClick={() => decreaseQty(balloon.id)}>-</button>
-                <span>{cartItem.quantity}</span>
-                <button onClick={(event) => addToCart(balloon, event)}>+</button>
-              </div>
-            )}
-          </div>
-        );
-      })}
+      <div className="balloon-grid">
+        {displayedFoils.map((balloon) => {
+          const imageName = balloon.name
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, "")
+            .replace(/\s+/g, "-") + ".jpg";
+          const imageUrl = `/foils/${imageName}`;
+          const cartItem = cart.find((item) => item.id === balloon.id);
+
+          return (
+            <div key={balloon.id} className="balloon-item">
+              <img
+                src={imageUrl}
+                alt={balloon.name}
+                className={balloonImageClass(balloon)}
+                onError={(e) => (e.currentTarget.style.display = "none")}
+              />
+              <h2>{balloon.name}</h2>
+              <p>${balloon.price.toFixed(2)}</p>
+              <button onClick={(event) => addToCart(balloon, event)}>Add</button>
+              {cartItem && (
+                <div className="quantity-controls">
+                  <button onClick={() => decreaseQty(balloon.id)}>-</button>
+                  <span>{cartItem.quantity}</span>
+                  <button onClick={(event) => addToCart(balloon, event)}>+</button>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
-    <CartSection
-  cart={cart}
-  addToCart={addToCart}
-  decreaseQty={decreaseQty}
-  removeFromCart={removeFromCart}
-  saveBouquet={saveBouquet}
-  totalCost={totalCost}
-/>
+    <CartSection />
   </div>
 )}
+
 
 {step === "weight" && (
   <div className="main-layout">
