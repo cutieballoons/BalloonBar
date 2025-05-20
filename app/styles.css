@@ -15,16 +15,14 @@ body {
 
 /* Grid Styling */
 .balloon-grid {
-  flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 15px;
-  max-width: 100%;
 }
 
 @media (min-width: 1024px) {
   .balloon-grid {
-    grid-template-columns: repeat(6, 1fr); /* desktop = 6 columns */
+    grid-template-columns: repeat(5, 1fr); /* desktop = 5 columns */
   }
 }
 
@@ -257,9 +255,9 @@ body {
 }
 
 .main-layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 40px;
-  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 5fr 2fr; /* 5 columns for balloon grid, 2 for cart */
+  gap: 20px;
+  align-items: start;
 }
 
