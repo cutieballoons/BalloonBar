@@ -306,7 +306,6 @@ export default function BalloonBar() {
       totalCost={totalCost}
     />
   </div>
-  </div>
 )}
 
 
