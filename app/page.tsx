@@ -192,49 +192,53 @@ const saveBouquet = async () => {
     return;
   }
 
-if (mode === "website") {
-  console.log("✅ WEBSITE mode detected - attempting add to cart");
+  if (mode === "website") {
+    console.log("✅ WEBSITE mode detected - attempting add to cart");
 
-  // 🚫 Prevent cart submission on wrong domain
-  if (!window.top.location.href.includes("cutieballoons.com")) {
-    alert("Add to Cart only works on our main website — try it at cutieballoons.com!");
-    return;
-  }
-
-  const items = [{
-    id: SHOPIFY_VARIANT_ID,
-    quantity: 1,
-    properties: {
-      "Custom Balloons": cart.map(item => `${item.name} x${item.quantity}`).join(", "),
-      "Total Balloons": cart.reduce((acc, item) => acc + item.quantity, 0),
-      "Total Price": `$${totalCost.toFixed(2)}`
+    try {
+      const topHref = window.top.location.href;
+      if (!topHref.includes("cutieballoons.com")) {
+        alert("Add to Cart only works on our main website — try it at cutieballoons.com!");
+        return;
+      }
+    } catch (err) {
+      console.warn("⚠️ Unable to access top.location.href due to cross-origin policy.");
+      // Let it continue
     }
-  }];
 
-  await fetch("/cart/add.js", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ items })
-  });
+    const items = [{
+      id: SHOPIFY_VARIANT_ID,
+      quantity: 1,
+      properties: {
+        "Custom Balloons": cart.map(item => `${item.name} x${item.quantity}`).join(", "),
+        "Total Balloons": cart.reduce((acc, item) => acc + item.quantity, 0),
+        "Total Price": `$${totalCost.toFixed(2)}`
+      }
+    }];
 
-  window.location.href = "/cart";
-  return;
-}
+    await fetch("/cart/add.js", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items })
+    });
 
+    window.location.href = "/cart";
+    return;
+  } else {
+    // STORE mode logic
+    const response = await fetch("/api/create-draft-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cart }),
+    });
 
-  // STORE mode logic
-  const response = await fetch("/api/create-draft-order", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ cart }),
-  });
-
-  const data = await response.json();
-  if (data.name) {
-    setOrderName(data.name);
-    setShowConfirmation(true);
+    const data = await response.json();
+    if (data.name) {
+      setOrderName(data.name);
+      setShowConfirmation(true);
+    }
   }
 };
 
