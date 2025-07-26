@@ -6,7 +6,9 @@ import "./styles.css";
 const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
 const mode = searchParams.get("mode") || "store"; // defaults to 'store' if param is missing
 
-<p>Current mode: {mode}</p>
+<p style={{ textAlign: "center", fontWeight: "bold", margin: "20px" }}>
+  🪄 Current Mode: {mode}
+</p>
 
 const latexBalloons = [
   { id: 1, name: "Diamond Clear", price: 3.25 },
