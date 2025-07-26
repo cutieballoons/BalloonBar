@@ -194,7 +194,7 @@ const saveBouquet = async () => {
 
 if (mode === "website") {
   // 🚫 Prevent cart submission on wrong domain
-  if (!window.location.href.includes("cutieballoons.com")) {
+  if (!window.top.location.href.includes("cutieballoons.com")) {
     alert("Add to Cart only works on our main website — try it at cutieballoons.com!");
     return;
   }
