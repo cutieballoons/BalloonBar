@@ -3,25 +3,7 @@ import React, { useState } from "react";
 import { Trash } from "lucide-react";
 import "./styles.css";
 
-const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
-const mode = searchParams.get("mode") || "store"; // defaults to 'store' if param is missing
-
-{mode && (
-  <div style={{ 
-    position: "fixed", 
-    top: 10, 
-    right: 10, 
-    background: "hotpink", 
-    color: "white", 
-    padding: "6px 12px", 
-    borderRadius: "6px", 
-    fontWeight: "bold", 
-    zIndex: 9999 
-  }}>
-    MODE: {mode.toUpperCase()}
-  </div>
-)}
-
+import { useSearchParams } from "next/navigation";
 
 
 const latexBalloons = [
@@ -158,6 +140,9 @@ export default function BalloonBar() {
   const [step, setStep] = useState("latex");
   const [foilFilter, setFoilFilter] = useState("All");
 
+  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const mode = searchParams?.get("mode") || "store";
+
   const addToCart = (balloon, event) => {
     if (event) event.stopPropagation();
     setCart((prev) => {
@@ -205,9 +190,25 @@ export default function BalloonBar() {
   };
 
   const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
+return (
+  <div className="container">
+    {/* Current Mode Display */}
+    {mode && (
+      <div style={{
+        position: "fixed",
+        top: 10,
+        right: 10,
+        background: "hotpink",
+        color: "white",
+        padding: "6px 12px",
+        borderRadius: "6px",
+        fontWeight: "bold",
+        zIndex: 9999
+      }}>
+        MODE: {mode.toUpperCase()}
+      </div>
+    )}
 
-  return (
-    <div className="container">
       <img src="/cutie-logo.jpg" alt="Cutie Balloons Logo" className="logo" />
       <h1 className="title"></h1>
       <div className="step-buttons">
