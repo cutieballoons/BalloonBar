@@ -142,8 +142,16 @@ export default function BalloonBar() {
   const [step, setStep] = useState("latex");
   const [foilFilter, setFoilFilter] = useState("All");
 
-  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-  const mode = searchParams?.get("mode") || "store";
+  const [mode, setMode] = useState("store");
+
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        const detectedMode = params.get("mode") || "store";
+        setMode(detectedMode);
+      }
+    }, []);
+
 
   const SHOPIFY_VARIANT_ID = 46855513047296;
 
