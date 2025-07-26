@@ -223,7 +223,7 @@ const saveBouquet = async () => {
   url.searchParams.set("properties[Total Balloons]", cart.reduce((acc, item) => acc + item.quantity, 0));
   url.searchParams.set("properties[Total Price]", `$${totalCost.toFixed(2)}`);
 
-  window.location.href = url.toString();
+  window.top.location.href = url.toString();
 
     return;
   } else {
