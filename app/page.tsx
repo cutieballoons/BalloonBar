@@ -216,13 +216,15 @@ const saveBouquet = async () => {
       }
     }];
 
-    await fetch("/cart/add.js", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items })
-    });
+  const url = new URL("https://www.cutieballoons.com/cart");
 
-    window.location.href = "/cart";
+  url.searchParams.set(`updates[${SHOPIFY_VARIANT_ID}]`, "1");
+  url.searchParams.set("properties[Custom Balloons]", cart.map(item => `${item.name} x${item.quantity}`).join(", "));
+  url.searchParams.set("properties[Total Balloons]", cart.reduce((acc, item) => acc + item.quantity, 0));
+  url.searchParams.set("properties[Total Price]", `$${totalCost.toFixed(2)}`);
+
+  window.location.href = url.toString();
+
     return;
   } else {
     // STORE mode logic
