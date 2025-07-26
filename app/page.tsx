@@ -128,7 +128,9 @@ function CartSection({ cart, addToCart, decreaseQty, removeFromCart, saveBouquet
         </ul>
       )}
       <h3>Total: ${totalCost.toFixed(2)}</h3>
-      <button onClick={saveBouquet}>Save My Bouquet</button>
+      <button onClick={saveBouquet}>
+        {mode === "website" ? "Add to Cart" : "Save My Bouquet"}
+      </button>
     </div>
   );
 }
@@ -142,6 +144,8 @@ export default function BalloonBar() {
 
   const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
   const mode = searchParams?.get("mode") || "store";
+
+  const SHOPIFY_VARIANT_ID = 46855513047296;
 
   const addToCart = (balloon, event) => {
     if (event) event.stopPropagation();
@@ -168,26 +172,50 @@ export default function BalloonBar() {
 
   const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const saveBouquet = async () => {
-      const hasWeight = cart.some(item => item.id >= 200);
-        if (!hasWeight) {
-          alert("Please select a balloon weight before saving your bouquet.");
-          return;
-        }
-    const response = await fetch("/api/create-draft-order", {
+const saveBouquet = async () => {
+  const hasWeight = cart.some(item => item.id >= 200);
+  if (!hasWeight) {
+    alert("Please select a balloon weight before saving your bouquet.");
+    return;
+  }
+
+  if (mode === "website") {
+    const items = [{
+      id: SHOPIFY_VARIANT_ID,
+      quantity: 1,
+      properties: {
+        "Custom Balloons": cart.map(item => `${item.name} x${item.quantity}`).join(", "),
+        "Total Balloons": cart.reduce((acc, item) => acc + item.quantity, 0),
+        "Total Price": `$${totalCost.toFixed(2)}`
+      }
+    }];
+
+    await fetch("/cart/add.js", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ cart }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items })
     });
 
-    const data = await response.json();
-    if (data.name) {
-      setOrderName(data.name);
-      setShowConfirmation(true);
-    }
-  };
+    window.location.href = "/cart";
+    return;
+  }
+
+  // STORE mode logic
+  const response = await fetch("/api/create-draft-order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ cart }),
+  });
+
+  const data = await response.json();
+  if (data.name) {
+    setOrderName(data.name);
+    setShowConfirmation(true);
+  }
+};
+
 
   const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
 return (
