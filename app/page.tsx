@@ -95,7 +95,7 @@ const balloonImageClass = (balloon) => {
   return balloon.category ? "balloon-image foil" : "balloon-image latex";
 };
 
-function CartSection({ cart, addToCart, decreaseQty, removeFromCart, saveBouquet, totalCost }) {
+function CartSection({ cart, addToCart, decreaseQty, removeFromCart, saveBouquet, totalCost, mode }) {
   return (
     <div className="cart sticky-cart">
       <h2>Your Custom Bouquet 🛒</h2>
@@ -301,6 +301,7 @@ return (
   removeFromCart={removeFromCart}
   saveBouquet={saveBouquet}
   totalCost={totalCost}
+  mode={mode}
 />
   </div>
 )}
@@ -354,6 +355,7 @@ return (
       removeFromCart={removeFromCart}
       saveBouquet={saveBouquet}
       totalCost={totalCost}
+      mode={mode}
     />
   </div>
 )}
@@ -398,6 +400,7 @@ return (
   removeFromCart={removeFromCart}
   saveBouquet={saveBouquet}
   totalCost={totalCost}
+  mode={mode}
 />
   </div>
 )}
