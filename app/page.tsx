@@ -192,26 +192,33 @@ const saveBouquet = async () => {
     return;
   }
 
-  if (mode === "website") {
-    const items = [{
-      id: SHOPIFY_VARIANT_ID,
-      quantity: 1,
-      properties: {
-        "Custom Balloons": cart.map(item => `${item.name} x${item.quantity}`).join(", "),
-        "Total Balloons": cart.reduce((acc, item) => acc + item.quantity, 0),
-        "Total Price": `$${totalCost.toFixed(2)}`
-      }
-    }];
-
-    await fetch("/cart/add.js", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items })
-    });
-
-    window.location.href = "/cart";
+if (mode === "website") {
+  // 🚫 Prevent cart submission on wrong domain
+  if (!window.location.href.includes("cutieballoons.com")) {
+    alert("Add to Cart only works on our main website — try it at cutieballoons.com!");
     return;
   }
+
+  const items = [{
+    id: SHOPIFY_VARIANT_ID,
+    quantity: 1,
+    properties: {
+      "Custom Balloons": cart.map(item => `${item.name} x${item.quantity}`).join(", "),
+      "Total Balloons": cart.reduce((acc, item) => acc + item.quantity, 0),
+      "Total Price": `$${totalCost.toFixed(2)}`
+    }
+  }];
+
+  await fetch("/cart/add.js", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items })
+  });
+
+  window.location.href = "/cart";
+  return;
+}
+
 
   // STORE mode logic
   const response = await fetch("/api/create-draft-order", {
