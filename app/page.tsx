@@ -6,9 +6,23 @@ import "./styles.css";
 const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
 const mode = searchParams.get("mode") || "store"; // defaults to 'store' if param is missing
 
-<p style={{ textAlign: "center", fontWeight: "bold", margin: "20px" }}>
-  🪄 Current Mode: {mode}
-</p>
+{mode && (
+  <div style={{ 
+    position: "fixed", 
+    top: 10, 
+    right: 10, 
+    background: "hotpink", 
+    color: "white", 
+    padding: "6px 12px", 
+    borderRadius: "6px", 
+    fontWeight: "bold", 
+    zIndex: 9999 
+  }}>
+    MODE: {mode.toUpperCase()}
+  </div>
+)}
+
+
 
 const latexBalloons = [
   { id: 1, name: "Diamond Clear", price: 3.25 },
