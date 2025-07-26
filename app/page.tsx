@@ -152,6 +152,11 @@ export default function BalloonBar() {
       }
     }, []);
 
+    useEffect(() => {
+  console.log("Current window.location.href:", window.location.href);
+  console.log("Detected MODE:", mode);
+}, [mode]);
+
 
   const SHOPIFY_VARIANT_ID = 46855513047296;
 
