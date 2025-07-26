@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { Trash } from "lucide-react";
 import "./styles.css";
 
+const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+const mode = searchParams.get("mode") || "store"; // defaults to 'store' if param is missing
+
 const latexBalloons = [
   { id: 1, name: "Diamond Clear", price: 3.25 },
   { id: 2, name: "White", price: 3.25 },
