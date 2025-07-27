@@ -192,50 +192,52 @@ const saveBouquet = async () => {
     return;
   }
 
-  if (mode === "website") {
-  console.log("✅ WEBSITE mode detected - adding correct variants to cart");
+if (mode === "website") {
+  console.log("✅ WEBSITE mode detected - redirecting via Shopify cart/add");
 
-  const variantMap = {
-    "Latex Balloon": 46855513047296,
-    "18\" Printed Foil": 46856106508544,
-    "34\" Printed Foil": 46856106541312,
-    "34\" Number/Letter": 46856106574080,
-    "12\" Shape": 46856106606848,
-    "Balloon Weight": 46856106639616,
-  };
+  const items = [];
 
-  const getVariantId = (item) => {
-    if (item.id >= 201) return variantMap["Balloon Weight"];
-    if (item.name.includes("Jumbo") || item.name.includes("34")) {
-      if (item.name.includes("Number") || item.name.includes("Letter")) return variantMap["34\" Number/Letter"];
-      return variantMap["34\" Printed Foil"];
+  for (const item of cart) {
+    let variantId;
+
+    if (item.id >= 200) {
+      // Balloon weights
+      variantId = 46856106639616;
+    } else if (item.name.includes("Number") || item.name.includes("Letter")) {
+      variantId = 46856106574080;
+    } else if (item.name.includes("Jumbo")) {
+      variantId = 46856106541312;
+    } else if (item.name.includes("18\"")) {
+      variantId = 46856106508544;
+    } else if (item.category === "Shapes") {
+      variantId = 46856106606848;
+    } else {
+      variantId = 46855513047296; // 11" Latex
     }
-    if (item.name.includes("18")) return variantMap["18\" Printed Foil"];
-    if (item.name.includes("Heart") || item.name.includes("Star")) return variantMap["12\" Shape"];
-    return variantMap["Latex Balloon"];
-  };
 
-  const lineItems = cart.map(item => ({
-    id: getVariantId(item),
-    quantity: item.quantity,
-    properties: {
-      "Balloon Type": item.name
-    }
-  }));
-
-  try {
-    await fetch("/cart/add.js", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: lineItems })
+    items.push({
+      id: variantId,
+      quantity: item.quantity,
+      properties: {
+        Name: item.name
+      }
     });
-
-    window.location.href = "/cart";
-  } catch (err) {
-    console.error("❌ Failed to add to cart:", err);
-    alert("Something went wrong while adding items to your cart. Please try again.");
   }
 
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "https://www.cutieballoons.com/cart/add";
+
+  items.forEach((item, index) => {
+    form.innerHTML += `
+      <input type="hidden" name="items[${index}][id]" value="${item.id}" />
+      <input type="hidden" name="items[${index}][quantity]" value="${item.quantity}" />
+      <input type="hidden" name="items[${index}][properties][Name]" value="${item.properties.Name}" />
+    `;
+  });
+
+  document.body.appendChild(form);
+  form.submit();
   return;
 }
 }
