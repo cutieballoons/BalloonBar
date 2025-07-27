@@ -191,71 +191,72 @@ const saveBouquet = async () => {
     alert("Please select a balloon weight before saving your bouquet.");
     return;
   }
-}
-if (mode === "website") {
-  console.log("✅ WEBSITE mode detected - redirecting via Shopify cart/add");
 
-  const items = [];
+  if (mode === "website") {
+    console.log("✅ WEBSITE mode detected - redirecting via Shopify cart/add");
 
-  for (const item of cart) {
-    let variantId;
+    const items = [];
 
-    if (item.id >= 200) {
-      variantId = 46856106639616; // Weight
-    } else if (item.name.includes("Number") || item.name.includes("Letter")) {
-      variantId = 46856106574080;
-    } else if (item.name.includes("Jumbo")) {
-      variantId = 46856106541312;
-    } else if (item.name.includes("18\"")) {
-      variantId = 46856106508544;
-    } else if (item.category === "Shapes") {
-      variantId = 46856106606848;
-    } else {
-      variantId = 46855513047296; // Latex default
+    for (const item of cart) {
+      let variantId;
+
+      if (item.id >= 200) {
+        variantId = 46856106639616; // Weight
+      } else if (item.name.includes("Number") || item.name.includes("Letter")) {
+        variantId = 46856106574080;
+      } else if (item.name.includes("Jumbo")) {
+        variantId = 46856106541312;
+      } else if (item.name.includes("18\"")) {
+        variantId = 46856106508544;
+      } else if (item.category === "Shapes") {
+        variantId = 46856106606848;
+      } else {
+        variantId = 46855513047296; // Latex default
+      }
+
+      items.push({
+        id: variantId,
+        quantity: item.quantity,
+        properties: {
+          Name: item.name
+        }
+      });
     }
 
-    items.push({
-      id: variantId,
-      quantity: item.quantity,
-      properties: {
-        Name: item.name
-      }
+    const customBalloons = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
+    const totalBalloons = cart.reduce((acc, item) => acc + item.quantity, 0);
+    const totalPrice = totalCost.toFixed(2);
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "https://www.cutieballoons.com/cart/add";
+
+    items.forEach((item, index) => {
+      form.innerHTML += `
+        <input type="hidden" name="items[${index}][id]" value="${item.id}" />
+        <input type="hidden" name="items[${index}][quantity]" value="${item.quantity}" />
+        <input type="hidden" name="items[${index}][properties][Name]" value="${item.properties.Name}" />
+      `;
     });
+
+    if (window.top !== window.self) {
+      const redirectUrl = new URL("https://www.cutieballoons.com/pages/balloon-bar-cart-add");
+      redirectUrl.searchParams.set("custom", customBalloons);
+      redirectUrl.searchParams.set("count", totalBalloons.toString());
+      redirectUrl.searchParams.set("price", `$${totalPrice}`);
+
+      window.top.location.href = redirectUrl.toString();
+      return;
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+  } else {
+    // Store mode logic
+    setOrderName(`CB-${Date.now()}`);
+    setShowConfirmation(true);
   }
-
-  // 💡 Define these before using them
-  const customBalloons = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
-  const totalBalloons = cart.reduce((acc, item) => acc + item.quantity, 0);
-  const totalPrice = totalCost.toFixed(2);
-
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = "https://www.cutieballoons.com/cart/add";
-
-  items.forEach((item, index) => {
-    form.innerHTML += `
-      <input type="hidden" name="items[${index}][id]" value="${item.id}" />
-      <input type="hidden" name="items[${index}][quantity]" value="${item.quantity}" />
-      <input type="hidden" name="items[${index}][properties][Name]" value="${item.properties.Name}" />
-    `;
-  });
-
-  if (window.top !== window.self) {
-    // Embedded in iframe – break out to full page
-    const redirectUrl = new URL("https://www.cutieballoons.com/pages/balloon-bar-cart-add");
-    redirectUrl.searchParams.set("custom", customBalloons);
-    redirectUrl.searchParams.set("count", totalBalloons.toString());
-    redirectUrl.searchParams.set("price", `$${totalPrice}`);
-
-    window.top.location.href = redirectUrl.toString();
-    return;
-  }
-
-  // Already in top window – just submit form
-  document.body.appendChild(form);
-  form.submit();
-}
-
+};
 
   const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
 return (
