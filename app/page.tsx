@@ -158,8 +158,6 @@ function BalloonBar() {
 }, [mode]);
 
 
-  const SHOPIFY_VARIANT_ID = 46855513047296;
-
   const addToCart = (balloon, event) => {
     if (event) event.stopPropagation();
     setCart((prev) => {
