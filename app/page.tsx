@@ -203,6 +203,8 @@ const saveBouquet = async () => {
     }
   }));
 
+  // ✅ ADD THIS LOG HERE:
+    console.log("🧺 Items to submit to Shopify:", items);
 
     const customBalloons = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
     const totalBalloons = cart.reduce((acc, item) => acc + item.quantity, 0);
