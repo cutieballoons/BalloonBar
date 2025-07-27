@@ -126,7 +126,15 @@ function BalloonBar() {
     `;
 
     document.body.appendChild(form);
-    form.submit();
+      const formData = new FormData(form);
+      const params = new URLSearchParams();
+
+      formData.forEach((value, key) => {
+        params.append(key, value.toString());
+      });
+
+      window.top.location.href = `${form.action}?${params.toString()}`;
+
     return;
   }
 
