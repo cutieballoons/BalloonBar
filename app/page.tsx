@@ -191,7 +191,7 @@ const saveBouquet = async () => {
     alert("Please select a balloon weight before saving your bouquet.");
     return;
   }
-
+}
 if (mode === "website") {
   console.log("✅ WEBSITE mode detected - redirecting via Shopify cart/add");
 
