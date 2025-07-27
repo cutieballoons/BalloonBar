@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 
 
 const latexBalloons = [
-  { id: 1, name: "Diamond Clear", price: 3.25, variantId: 46855513047296 },
+  { id: 1, name: "Crystal Clear", price: 3.25, variantId: 46856153039104 },
   { id: 2, name: "White", price: 3.25, variantId: 46855513047296 },
   { id: 3, name: "Pearl White", price: 3.25, variantId: 46855513047296 },
   { id: 4, name: "Gray", price: 3.25, variantId: 46855513047296 },
