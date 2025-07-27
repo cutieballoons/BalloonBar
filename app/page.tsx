@@ -202,13 +202,22 @@ const saveBouquet = async () => {
 
 const getVariantId = (item) => item.variantId;
 
-    const items = cart.map(item => ({
-      id: getVariantId(item),
-      quantity: item.quantity,
-      properties: {
-        Name: item.name
-      }
-    }));
+for (const item of cart) {
+  if (!item.variantId) {
+    alert(`Missing variant ID for: ${item.name}`);
+    console.warn("❌ Missing variant ID:", item);
+    return;
+  }
+}
+
+const items = cart.map(item => ({
+  id: item.variantId,
+  quantity: item.quantity,
+  properties: {
+    Name: item.name
+  }
+}));
+
 
     console.log("🧺 Items to submit to Shopify:", items);
 
