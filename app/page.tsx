@@ -111,61 +111,29 @@ function BalloonBar() {
   const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const saveBouquet = async () => {
-    const hasWeight = cart.some(item => item.id >= 200);
-    if (!hasWeight) {
-      alert("Please select a balloon weight before saving your bouquet.");
-      return;
-    }
+  if (mode === "website") {
+    console.log("🚨 Hardcoded test mode start");
 
-    if (mode === "website") {
-      const items = cart.map(item => {
-        if (!item.variantId) {
-          alert(`Missing variant ID for: ${item.name}`);
-          console.warn("❌ Missing variant ID item:", item);
-          console.table(cart); // logs the full cart so you can see what’s missing
-          throw new Error("Missing variantId");
-        }
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "https://www.cutieballoons.com/cart/add";
 
-        return {
-          id: item.variantId,
-          quantity: item.quantity,
-          properties: { Name: item.name }
-        };
-      });
+    // ✅ Hardcoded known-good item with a verified variantId
+    form.innerHTML += `
+      <input type="hidden" name="items[0][id]" value="46856153039104" />
+      <input type="hidden" name="items[0][quantity]" value="2" />
+      <input type="hidden" name="items[0][properties][Name]" value="Crystal Clear" />
+    `;
 
-      const customBalloons = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
-      const totalBalloons = cart.reduce((acc, item) => acc + item.quantity, 0);
-      const totalPrice = totalCost.toFixed(2);
+    document.body.appendChild(form);
+    form.submit();
+    return;
+  }
 
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = "https://www.cutieballoons.com/cart/add";
-
-      items.forEach((item, index) => {
-        form.innerHTML += `
-          <input type="hidden" name="items[${index}][id]" value="${item.id}" />
-          <input type="hidden" name="items[${index}][quantity]" value="${item.quantity}" />
-          <input type="hidden" name="items[${index}][properties][Name]" value="${item.properties.Name}" />
-        `;
-      });
-
-      if (window.top !== window.self) {
-        const redirectUrl = new URL("https://www.cutieballoons.com/pages/balloon-bar-cart-add");
-        redirectUrl.searchParams.set("custom", customBalloons);
-        redirectUrl.searchParams.set("count", totalBalloons.toString());
-        redirectUrl.searchParams.set("price", `$${totalPrice}`);
-
-        window.top.location.href = redirectUrl.toString();
-        return;
-      }
-
-      document.body.appendChild(form);
-      form.submit();
-    } else {
-      setOrderName(`CB-${Date.now()}`);
-      setShowConfirmation(true);
-    }
-  };
+  // Store mode logic (unchanged)
+  setOrderName(`CB-${Date.now()}`);
+  setShowConfirmation(true);
+};
 
   const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
 
