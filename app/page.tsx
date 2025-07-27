@@ -201,8 +201,7 @@ if (mode === "website") {
     let variantId;
 
     if (item.id >= 200) {
-      // Balloon weights
-      variantId = 46856106639616;
+      variantId = 46856106639616; // Weight
     } else if (item.name.includes("Number") || item.name.includes("Letter")) {
       variantId = 46856106574080;
     } else if (item.name.includes("Jumbo")) {
@@ -212,7 +211,7 @@ if (mode === "website") {
     } else if (item.category === "Shapes") {
       variantId = 46856106606848;
     } else {
-      variantId = 46855513047296; // 11" Latex
+      variantId = 46855513047296; // Latex default
     }
 
     items.push({
@@ -223,6 +222,11 @@ if (mode === "website") {
       }
     });
   }
+
+  // 💡 Define these before using them
+  const customBalloons = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
+  const totalBalloons = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalPrice = totalCost.toFixed(2);
 
   const form = document.createElement("form");
   form.method = "POST";
@@ -236,21 +240,22 @@ if (mode === "website") {
     `;
   });
 
-if (window.top !== window.self) {
-  // Not the top frame? Break out!
-  const redirectUrl = new URL("https://www.cutieballoons.com/pages/balloon-bar-cart-add");
-  redirectUrl.searchParams.set("custom", customBalloons);
-  redirectUrl.searchParams.set("count", totalBalloons.toString());
-  redirectUrl.searchParams.set("price", `$${totalPrice}`);
+  if (window.top !== window.self) {
+    // Embedded in iframe – break out to full page
+    const redirectUrl = new URL("https://www.cutieballoons.com/pages/balloon-bar-cart-add");
+    redirectUrl.searchParams.set("custom", customBalloons);
+    redirectUrl.searchParams.set("count", totalBalloons.toString());
+    redirectUrl.searchParams.set("price", `$${totalPrice}`);
 
-  window.location.href = redirectUrl.toString();
-  return;
-}
+    window.top.location.href = redirectUrl.toString();
+    return;
+  }
 
-  // If already in top window, submit the form
+  // Already in top window – just submit form
   document.body.appendChild(form);
   form.submit();
 }
+
 
   const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
 return (
