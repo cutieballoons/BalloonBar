@@ -101,12 +101,15 @@ function BalloonBar() {
     form.method = "POST";
     form.action = "https://www.cutieballoons.com/cart/add";
 
-    // ✅ Hardcoded known-good item with a verified variantId
-    form.innerHTML += `
-      <input type="hidden" name="items[0][id]" value="46856153039104" />
-      <input type="hidden" name="items[0][quantity]" value="2" />
-      <input type="hidden" name="items[0][properties][Name]" value="Crystal Clear" />
-    `;
+      cart.forEach((item, index) => {
+        form.innerHTML += `
+          <input type="hidden" name="items[${index}][id]" value="${item.variantId}" />
+          <input type="hidden" name="items[${index}][quantity]" value="${item.quantity}" />
+          <input type="hidden" name="items[${index}][properties][Name]" value="${item.name}" />
+          <input type="hidden" name="items[${index}][properties][Category]" value="${item.category || "Latex"}" />
+        `;
+      });
+
 
     document.body.appendChild(form);
       const formData = new FormData(form);
