@@ -121,8 +121,11 @@ function BalloonBar() {
       const items = cart.map(item => {
         if (!item.variantId) {
           alert(`Missing variant ID for: ${item.name}`);
+          console.warn("❌ Missing variant ID item:", item);
+          console.table(cart); // logs the full cart so you can see what’s missing
           throw new Error("Missing variantId");
         }
+
         return {
           id: item.variantId,
           quantity: item.quantity,
