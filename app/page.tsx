@@ -195,15 +195,23 @@ const saveBouquet = async () => {
   if (mode === "website") {
     console.log("✅ WEBSITE mode detected - redirecting via Shopify cart/add");
 
-    const items = cart.map(item => ({
-    id: item.variantId || 46855513047296, // fallback to default if missing
-    quantity: item.quantity,
-    properties: {
-      Name: item.name
-    }
-  }));
+    const getVariantId = (item) => {
+      if (item.id >= 200) return 46856106639616; // 🎁 Weights
+      if (item.category === "Shapes") return 46856106606848; // ⭐ Foil shapes
+      if (item.category === "Number Balloons") return 46856106574080; // 🔢 Numbers
+      if (item.name.startsWith("18")) return 46856106508544; // 💥 18" foils
+      if (item.name.startsWith("Jumbo")) return 46856106541312; // 🥂 Jumbo foils
+      return 46855513047296; // 🎈 Default: Latex
+    };
 
-  // ✅ ADD THIS LOG HERE:
+    const items = cart.map(item => ({
+      id: getVariantId(item),
+      quantity: item.quantity,
+      properties: {
+        Name: item.name
+      }
+    }));
+
     console.log("🧺 Items to submit to Shopify:", items);
 
     const customBalloons = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
@@ -240,6 +248,7 @@ const saveBouquet = async () => {
     setShowConfirmation(true);
   }
 };
+
 
   const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
 return (
