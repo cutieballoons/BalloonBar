@@ -2,17 +2,20 @@
 import React, { useState, useEffect } from "react";
 import { Trash } from "lucide-react";
 import "./styles.css";
+
 import { useSearchParams } from "next/navigation";
 
 const latexBalloons = [
   { id: 1, name: "Crystal Clear", price: 3.25, variantId: 46856153039104 },
   { id: 2, name: "White", price: 3.25, variantId: 46855513047296 },
-  // ... other latex balloons with accurate variantIds
+  // ... (all other latex balloons)
+  { id: 52, name: "Chrome Blue", price: 3.25, variantId: 46855513047296 }
 ];
 
 const foilBalloons = [
   { id: 101, name: "Happy Birthday Star", price: 15, category: "Shapes" },
-  // ... other foil balloons
+  // ... (all other foil balloons)
+  { id: 120, name: "18\" Puppies Birthday", price: 15, category: "Birthday" }
 ];
 
 const weights = [
@@ -36,7 +39,11 @@ function CartSection({ cart, addToCart, decreaseQty, removeFromCart, saveBouquet
         <ul>
           {cart.map((item) => {
             const imageName = item.name.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, "-") + ".jpg";
-            const imageFolder = item.category ? "foils" : item.id >= 200 ? "weights" : "balloons";
+            const imageFolder = item.category
+              ? "foils"
+              : item.id >= 200
+              ? "weights"
+              : "balloons";
             const imageUrl = `/${imageFolder}/${imageName}`;
 
             return (
@@ -89,9 +96,11 @@ function BalloonBar() {
 
   const decreaseQty = (id) => {
     setCart((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-      ).filter((item) => item.quantity > 0)
+      prev
+        .map((item) =>
+          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter((item) => item.quantity > 0)
     );
   };
 
@@ -109,20 +118,17 @@ function BalloonBar() {
     }
 
     if (mode === "website") {
-      for (const item of cart) {
+      const items = cart.map(item => {
         if (!item.variantId) {
           alert(`Missing variant ID for: ${item.name}`);
-          return;
+          throw new Error("Missing variantId");
         }
-      }
-
-      const items = cart.map(item => ({
-        id: item.variantId,
-        quantity: item.quantity,
-        properties: {
-          Name: item.name
-        }
-      }));
+        return {
+          id: item.variantId,
+          quantity: item.quantity,
+          properties: { Name: item.name }
+        };
+      });
 
       const customBalloons = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
       const totalBalloons = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -158,6 +164,8 @@ function BalloonBar() {
     }
   };
 
+  const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
+
   return (
     <div className="container">
       {mode && (
@@ -175,7 +183,172 @@ function BalloonBar() {
           MODE: {mode.toUpperCase()}
         </div>
       )}
-      {/* UI rendering for steps, products, and CartSection goes here */}
+
+      <img src="/cutie-logo.jpg" alt="Cutie Balloons Logo" className="logo" />
+      <div className="step-buttons">
+        <button className={step === "latex" ? "active" : ""} onClick={() => setStep("latex")}>Step 1: Latex Balloons</button>
+        <button className={step === "foil" ? "active" : ""} onClick={() => setStep("foil")}>Step 2: Foil Balloons</button>
+        <button className={step === "weight" ? "active" : ""} onClick={() => setStep("weight")}>Step 3: Choose Weight (Required)</button>
+      </div>
+
+      {showConfirmation ? (
+        <div className="confirmation">
+          <h2>🎉 Your bouquet is saved!</h2>
+          <p><strong>Order ID:</strong> {orderName}</p>
+          <p>Show this screen to a team member. They’ll pull up your custom bouquet in our system.</p>
+          <div className="confirmation-buttons">
+            <button onClick={() => {
+              setCart([]);
+              setOrderName("");
+              setShowConfirmation(false);
+            }}>
+              Start New Session
+            </button>
+            <button onClick={() => setShowConfirmation(false)}>
+              Edit This Bouquet
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {step === "latex" && (
+            <div className="main-layout">
+              <div className="balloon-grid">
+                {latexBalloons.map((balloon) => {
+                  const imageName = balloon.name.toLowerCase().replace(/ /g, "-") + ".jpg";
+                  const imageUrl = `/balloons/${imageName}`;
+                  const cartItem = cart.find((item) => item.id === balloon.id);
+
+                  return (
+                    <div key={balloon.id} className="balloon-item">
+                      <img
+                        src={imageUrl}
+                        alt={balloon.name}
+                        className={balloonImageClass(balloon)}
+                        onError={(e) => (e.currentTarget.style.display = "none")}
+                      />
+                      <h2>{balloon.name}</h2>
+                      <p>${balloon.price.toFixed(2)}</p>
+                      <button onClick={(event) => addToCart(balloon, event)}>Add</button>
+                      {cartItem && (
+                        <div className="quantity-controls">
+                          <button onClick={() => decreaseQty(balloon.id)}>-</button>
+                          <span>{cartItem.quantity}</span>
+                          <button onClick={(event) => addToCart(balloon, event)}>+</button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <CartSection
+                cart={cart}
+                addToCart={addToCart}
+                decreaseQty={decreaseQty}
+                removeFromCart={removeFromCart}
+                saveBouquet={saveBouquet}
+                totalCost={totalCost}
+                mode={mode}
+              />
+            </div>
+          )}
+
+          {step === "foil" && (
+            <div className="main-layout">
+              <div className="left-column">
+                <div className="filters">
+                  <button onClick={() => setFoilFilter("All")} className={foilFilter === "All" ? "active" : ""}>All</button>
+                  <button onClick={() => setFoilFilter("Birthday")} className={foilFilter === "Birthday" ? "active" : ""}>Birthday</button>
+                  <button onClick={() => setFoilFilter("Number Balloons")} className={foilFilter === "Number Balloons" ? "active" : ""}>Number Balloons</button>
+                  <button onClick={() => setFoilFilter("Shapes")} className={foilFilter === "Shapes" ? "active" : ""}>Shapes</button>
+                </div>
+
+                <div className="balloon-grid">
+                  {displayedFoils.map((balloon) => {
+                    const imageName = balloon.name.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, "-") + ".jpg";
+                    const imageUrl = `/foils/${imageName}`;
+                    const cartItem = cart.find((item) => item.id === balloon.id);
+
+                    return (
+                      <div key={balloon.id} className="balloon-item">
+                        <img
+                          src={imageUrl}
+                          alt={balloon.name}
+                          className={balloonImageClass(balloon)}
+                          onError={(e) => (e.currentTarget.style.display = "none")}
+                        />
+                        <h2>{balloon.name}</h2>
+                        <p>${balloon.price.toFixed(2)}</p>
+                        <button onClick={(event) => addToCart(balloon, event)}>Add</button>
+                        {cartItem && (
+                          <div className="quantity-controls">
+                            <button onClick={() => decreaseQty(balloon.id)}>-</button>
+                            <span>{cartItem.quantity}</span>
+                            <button onClick={(event) => addToCart(balloon, event)}>+</button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <CartSection
+                cart={cart}
+                addToCart={addToCart}
+                decreaseQty={decreaseQty}
+                removeFromCart={removeFromCart}
+                saveBouquet={saveBouquet}
+                totalCost={totalCost}
+                mode={mode}
+              />
+            </div>
+          )}
+
+          {step === "weight" && (
+            <div className="main-layout">
+              <div className="balloon-grid">
+                {weights.map((weight) => {
+                  const imageName = weight.name.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, "-") + ".jpg";
+                  const imageUrl = `/weights/${imageName}`;
+                  const cartItem = cart.find((item) => item.id === weight.id);
+
+                  return (
+                    <div key={weight.id} className="balloon-item">
+                      <img
+                        src={imageUrl}
+                        alt={weight.name}
+                        className="balloon-image"
+                        onError={(e) => (e.currentTarget.style.display = "none")}
+                      />
+                      <h2>{weight.name}</h2>
+                      <p>${weight.price.toFixed(2)}</p>
+                      <button onClick={(event) => {
+                        event.stopPropagation();
+                        setCart((prev) => {
+                          const withoutWeights = prev.filter(item => item.id < 200);
+                          return [...withoutWeights, { ...weight, quantity: 1 }];
+                        });
+                      }}>
+                        Select
+                      </button>
+                      {cartItem && <p>✅ Selected</p>}
+                    </div>
+                  );
+                })}
+              </div>
+              <CartSection
+                cart={cart}
+                addToCart={addToCart}
+                decreaseQty={decreaseQty}
+                removeFromCart={removeFromCart}
+                saveBouquet={saveBouquet}
+                totalCost={totalCost}
+                mode={mode}
+              />
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
