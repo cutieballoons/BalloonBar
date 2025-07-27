@@ -236,11 +236,17 @@ if (mode === "website") {
     `;
   });
 
-  if (window.top !== window.self) {
+if (window.top !== window.self) {
   // Not the top frame? Break out!
-    window.location.href = redirectUrl.toString();
-    return;
-  }
+  const redirectUrl = new URL("https://www.cutieballoons.com/pages/balloon-bar-cart-add");
+  redirectUrl.searchParams.set("custom", customBalloons);
+  redirectUrl.searchParams.set("count", totalBalloons.toString());
+  redirectUrl.searchParams.set("price", `$${totalPrice}`);
+
+  window.location.href = redirectUrl.toString();
+  return;
+}
+
   // If already in top window, submit the form
   document.body.appendChild(form);
   form.submit();
