@@ -195,16 +195,17 @@ const saveBouquet = async () => {
   if (mode === "website") {
     console.log("✅ WEBSITE mode detected - redirecting via Shopify cart/add");
 
-const getVariantId = (item) => item.variantId || defaultVariantId(item);
-
-  const defaultVariantId = (item) => {
-    if (item.id >= 200) return 46856106639616;
-    if (item.category === "Shapes") return 46856106606848;
-    if (item.category === "Number Balloons") return 46856106574080;
-    if (item.name.startsWith("18")) return 46856106508544;
-    if (item.name.startsWith("Jumbo")) return 46856106541312;
-    return 46855513047296;
+// move helper function definitions up FIRST:
+const defaultVariantId = (item) => {
+  if (item.id >= 200) return 46856106639616;
+  if (item.category === "Shapes") return 46856106606848;
+  if (item.category === "Number Balloons") return 46856106574080;
+  if (item.name.startsWith("18")) return 46856106508544;
+  if (item.name.startsWith("Jumbo")) return 46856106541312;
+  return 46855513047296;
 };
+
+const getVariantId = (item) => item.variantId || defaultVariantId(item);
 
     const items = cart.map(item => ({
       id: getVariantId(item),
