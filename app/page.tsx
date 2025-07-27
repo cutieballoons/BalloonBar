@@ -5,25 +5,8 @@ import "./styles.css";
 
 import { useSearchParams } from "next/navigation";
 
-const latexBalloons = [
-  { id: 1, name: "Crystal Clear", price: 3.25, variantId: 46856153039104 },
-  { id: 2, name: "White", price: 3.25, variantId: 46855513047296 },
-  // ... (all other latex balloons)
-  { id: 52, name: "Chrome Blue", price: 3.25, variantId: 46855513047296 }
-];
+import { latexBalloons, foilBalloons, weights } from "./balloonData";
 
-const foilBalloons = [
-  { id: 101, name: "Happy Birthday Star", price: 15, category: "Shapes" },
-  // ... (all other foil balloons)
-  { id: 120, name: "18\" Puppies Birthday", price: 15, category: "Birthday" }
-];
-
-const weights = [
-  { id: 201, name: "Rose Gold Weight", price: 2.25, variantId: 46856157757696 },
-  { id: 202, name: "Gold Weight", price: 2.25, variantId: 46856106639616 },
-  { id: 203, name: "Silver Weight", price: 2.25, variantId: 46856106639616 },
-  { id: 204, name: "Black Weight", price: 2.25, variantId: 46856106639616 }
-];
 
 const balloonImageClass = (balloon) => {
   return balloon.category ? "balloon-image foil" : "balloon-image latex";
