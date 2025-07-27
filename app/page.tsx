@@ -85,7 +85,7 @@ const foilBalloons = [
 ];
 
 const weights = [
-  { id: 201, name: "Rose Gold Weight", price: 2.25, variantId: 46856106639616 },
+  { id: 201, name: "Rose Gold Weight", price: 2.25, variantId: 46856157757696 },
   { id: 202, name: "Gold Weight", price: 2.25, variantId: 46856106639616 },
   { id: 203, name: "Silver Weight", price: 2.25, variantId: 46856106639616 },
   { id: 204, name: "Black Weight", price: 2.25, variantId: 46856106639616 }
