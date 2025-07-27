@@ -238,7 +238,7 @@ if (mode === "website") {
 
   if (window.top !== window.self) {
   // Not the top frame? Break out!
-    window.top.location = window.location.href;
+    window.location.href = redirectUrl.toString();
     return;
   }
   // If already in top window, submit the form
