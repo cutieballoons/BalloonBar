@@ -236,12 +236,15 @@ if (mode === "website") {
     `;
   });
 
+  if (window.top !== window.self) {
+  // Not the top frame? Break out!
+    window.top.location = window.location.href;
+    return;
+  }
+  // If already in top window, submit the form
   document.body.appendChild(form);
   form.submit();
-  return;
 }
-}
-
 
   const displayedFoils = foilFilter === "All" ? foilBalloons : foilBalloons.filter(b => b.category === foilFilter);
 return (
