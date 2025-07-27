@@ -193,22 +193,47 @@ const saveBouquet = async () => {
   }
 
   if (mode === "website") {
-  console.log("✅ WEBSITE mode detected - redirecting to Shopify form page");
+  console.log("✅ WEBSITE mode detected - adding correct variants to cart");
 
-  const customBalloons = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
-  const totalBalloons = cart.reduce((acc, item) => acc + item.quantity, 0);
-  const totalPrice = totalCost.toFixed(2);
+  const variantMap = {
+    "Latex Balloon": 46855513047296,
+    "18\" Printed Foil": 46856106508544,
+    "34\" Printed Foil": 46856106541312,
+    "34\" Number/Letter": 46856106574080,
+    "12\" Shape": 46856106606848,
+    "Balloon Weight": 46856106639616,
+  };
 
-  const redirectUrl = new URL("https://www.cutieballoons.com/pages/balloon-bar-cart-add");
-  redirectUrl.searchParams.set("custom", customBalloons);
-  redirectUrl.searchParams.set("count", totalBalloons);
-  redirectUrl.searchParams.set("price", `$${totalPrice}`);
+  const getVariantId = (item) => {
+    if (item.id >= 201) return variantMap["Balloon Weight"];
+    if (item.name.includes("Jumbo") || item.name.includes("34")) {
+      if (item.name.includes("Number") || item.name.includes("Letter")) return variantMap["34\" Number/Letter"];
+      return variantMap["34\" Printed Foil"];
+    }
+    if (item.name.includes("18")) return variantMap["18\" Printed Foil"];
+    if (item.name.includes("Heart") || item.name.includes("Star")) return variantMap["12\" Shape"];
+    return variantMap["Latex Balloon"];
+  };
+
+  const lineItems = cart.map(item => ({
+    id: getVariantId(item),
+    quantity: item.quantity,
+    properties: {
+      "Balloon Type": item.name
+    }
+  }));
 
   try {
-    window.top.location.href = redirectUrl.toString(); // Try to break out of iframe
+    await fetch("/cart/add.js", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: lineItems })
+    });
+
+    window.location.href = "/cart";
   } catch (err) {
-    console.warn("❌ Unable to break out of iframe, redirecting within iframe instead");
-    window.location.href = redirectUrl.toString(); // Fallback to iframe-level redirect
+    console.error("❌ Failed to add to cart:", err);
+    alert("Something went wrong while adding items to your cart. Please try again.");
   }
 
   return;
