@@ -234,6 +234,8 @@ const getVariantId = (item) => item.variantId;
       window.top.location.href = redirectUrl.toString();
       return;
     }
+    
+console.log("🧠 Final item list before submit:", JSON.stringify(items, null, 2));
 
     document.body.appendChild(form);
     form.submit();
