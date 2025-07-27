@@ -186,11 +186,16 @@ function BalloonBar() {
   const totalCost = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
 const saveBouquet = async () => {
+  console.log("💡 Mode at saveBouquet:", mode);
+
   const hasWeight = cart.some(item => item.id >= 200);
+  console.log("🪶 hasWeight check:", hasWeight);
+
   if (!hasWeight) {
     alert("Please select a balloon weight before saving your bouquet.");
     return;
   }
+
 
   if (mode === "website") {
     console.log("✅ WEBSITE mode detected - redirecting via Shopify cart/add");
@@ -234,7 +239,6 @@ const getVariantId = (item) => item.variantId;
       window.top.location.href = redirectUrl.toString();
       return;
     }
-    
 console.log("🧠 Final item list before submit:", JSON.stringify(items, null, 2));
 
     document.body.appendChild(form);
