@@ -195,33 +195,14 @@ const saveBouquet = async () => {
   if (mode === "website") {
     console.log("✅ WEBSITE mode detected - redirecting via Shopify cart/add");
 
-    const items = [];
-
-    for (const item of cart) {
-      let variantId;
-
-      if (item.id >= 200) {
-        variantId = 46856106639616; // Weight
-      } else if (item.name.includes("Number") || item.name.includes("Letter")) {
-        variantId = 46856106574080;
-      } else if (item.name.includes("Jumbo")) {
-        variantId = 46856106541312;
-      } else if (item.name.includes("18\"")) {
-        variantId = 46856106508544;
-      } else if (item.category === "Shapes") {
-        variantId = 46856106606848;
-      } else {
-        variantId = 46855513047296; // Latex default
-      }
-
-      items.push({
-        id: variantId,
-        quantity: item.quantity,
-        properties: {
-          Name: item.name
-        }
-      });
+    const items = cart.map(item => ({
+    id: item.variantId || 46855513047296, // fallback to default if missing
+    quantity: item.quantity,
+    properties: {
+      Name: item.name
     }
+  }));
+
 
     const customBalloons = cart.map(item => `${item.name} x${item.quantity}`).join(", ");
     const totalBalloons = cart.reduce((acc, item) => acc + item.quantity, 0);
